@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.nootera</groupId>
+    <artifactId>Trader</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Trader</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mainClass>com.nootera.trader.MainApp</mainClass>
+    </properties>
+
+    <organization>
+        <!-- Used as the 'Vendor' for JNLP generation -->
+        <name>Noo</name>
+    </organization>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeScope>system</excludeScope>
+<!--							si.mazi.rescu,org.slf4j,org.java_websocket,com.xeiam.xchange,org.apache.commons,org.encog,javax,-->
+                            <excludeGroupIds>junit,org.mockito,org.hamcrest</excludeGroupIds>
+                            <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${java.home}/../bin/javafxpackager</executable>
+                            <arguments>
+                                <argument>-createjar</argument>
+                                <argument>-nocss2bin</argument>
+                                <argument>-appclass</argument>
+                                <argument>${mainClass}</argument>
+                                <argument>-srcdir</argument>
+                                <argument>${project.build.directory}/classes</argument>
+                                <argument>-outdir</argument>
+                                <argument>${project.build.directory}</argument>
+                                <argument>-outfile</argument>
+                                <argument>${project.build.finalName}.jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>  
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <compilerArguments>
+                        <bootclasspath>${sun.boot.class.path}${path.separator}${java.home}/lib/jfxrt.jar</bootclasspath>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+<!--                        
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.7</version>
+                <executions>
+                   <execution>
+                       <phase>package</phase>
+                       <goals><goal>proguard</goal></goals>
+                   </execution>
+                </executions>
+                <configuration>
+					<includeDependency>false</includeDependency>
+                    <proguardVersion>4.11</proguardVersion>
+                    <options>
+                        <option>-allowaccessmodification</option>
+						<option>-dontwarn</option>
+						
+						<option>-keep class javax.** { *; }</option>
+						<option>-keep class org.encog.** { *; }</option>
+						
+                        <option>-keep public class * extends java.applet.Applet { *; }</option>
+                    </options>
+                    <libs>
+                        <lib>${java.home}\lib\rt.jar</lib>
+                        <lib>${java.home}\lib\jce.jar</lib>
+                        <lib>${java.home}\lib\jfxrt.jar</lib>
+                    </libs>
+                </configuration>
+            </plugin>
+-->
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.encog</groupId>
+            <artifactId>encog-core</artifactId>
+            <version>3.3.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xeiam.xchange</groupId>
+            <artifactId>xchange-core</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xeiam.xchange</groupId>
+            <artifactId>xchange-bter</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tictactec</groupId>
+            <artifactId>ta-lib</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.xeiam.xchange</groupId>
+            <artifactId>xchange-bitcoincharts</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <description>Copyright 2014 BownCo
+All rights reserved.</description>
+</project>
