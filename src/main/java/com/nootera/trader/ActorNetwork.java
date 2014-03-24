@@ -28,10 +28,6 @@ public class ActorNetwork {
 		this.method = method; this.actor = actor; this.log = log;
 	}
 	
-	public static final NormalizedField trade = new NormalizedField(NormalizationAction.Normalize, "trade", 1000, -1000, 1, -1);
-	public static final double fee = 0.99F;
-	public static final double exptMaxBTC = 10000;
-	public static final double exptMaxUSD = 10000000;
 	public double scoreActor() {
 		double balBTC = 0;
 		double balUSD = 0;
@@ -57,13 +53,13 @@ public class ActorNetwork {
 			MLData input = FXMLController.dataSet.generateInputNeuralData(i - FXMLController.INPUT_WINDOW_SIZE + 2); //this function goes back one to grab data, actual index start is minus one from this index
 			input = new BasicMLData(Arrays.copyOf(input.getData(), 27));
 			input.setData(24, point.getData(4)); //currently predicted price for next tick
-			input.setData(25, Math.tanh(balBTC/exptMaxBTC*Math.PI));
-			input.setData(26, Math.tanh(balUSD/exptMaxUSD*Math.PI));
+			input.setData(25, Math.tanh(balBTC/FXMLController.exptMaxBTC*Math.PI));
+			input.setData(26, Math.tanh(balUSD/FXMLController.exptMaxUSD*Math.PI));
 			
 			MLData output = ((MLRegression)this.method).compute(input);
 			
 			
-			tradeBTC = Math.round(trade.deNormalize(output.getData(0)-output.getData(1))); //positive=buyBTC,negative=sellBTC
+			tradeBTC = Math.round(FXMLController.trade.deNormalize(output.getData(0)-output.getData(1))); //positive=buyBTC,negative=sellBTC
 
 			if (tradeBTC > 0 && balUSD > 0) { //buy BTC
 				double balUSDo = balUSD;
@@ -72,7 +68,7 @@ public class ActorNetwork {
 					balUSD = 0;
 					tradeBTC = balUSDo/price;
 				}
-				balBTC += tradeBTC*fee;
+				balBTC += tradeBTC*FXMLController.fee;
 				totaltrades++;
 				buysellBTC = +1;
 				if (log) System.out.println(String.format("[%5d] Price[%7.2f] BoughtBTC[%9.4f]   BTC[%,12.4f] USD[%,15.2f]", i, price, tradeBTC, balBTC, balUSD));
@@ -85,7 +81,7 @@ public class ActorNetwork {
 					balBTC = 0;
 					tradeBTC = balBTCo;
 				}
-				balUSD += tradeBTC*price*fee;
+				balUSD += tradeBTC*price*FXMLController.fee;
 				totaltrades++;
 				buysellBTC = -1;
 				if (log) System.out.println(String.format("[%5d] Price[%7.2f]   SoldBTC[%9.4f]   balBTC[%,12.4f] balUSD[%,15.2f]", i, price, tradeBTC, balBTC, balUSD));

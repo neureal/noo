@@ -24,7 +24,7 @@ public class BtceMarketFile {
 	public boolean getNewPoint(TemporalMLDataSet dataSet) {
 		if (csv.next()) {
 			int timestamp = csv.getInt(0);
-			if (timestamp >= 1366487996) return false;
+			//if (timestamp >= 1366487996) return false;
 
 			double priceUSD = csv.getDouble(1);
 			double volumeBTC = csv.getDouble(2);

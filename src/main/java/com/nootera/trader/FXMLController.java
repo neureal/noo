@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 BownCo
+ * Copyright Â© 2014 BownCo
  * All rights reserved.
  */
 
@@ -42,12 +42,17 @@ public class FXMLController implements Initializable {
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //current USD total
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 1 tick
 	}
-	public static NormalizedField normPrice = new NormalizedField(NormalizationAction.Normalize, "price", 1200, 0, 1, 0); //price
-	public static NormalizedField normVolume = new NormalizedField(NormalizationAction.Normalize, "volume", 300, 0, 1, 0); //volume
-	public static int maxTrainHistory = 100; //number ticks/points backwards to keep(in data) for training
+	public static final NormalizedField normPrice = new NormalizedField(NormalizationAction.Normalize, "price", 1200, 0, 1, 0); //price
+	public static final NormalizedField normVolume = new NormalizedField(NormalizationAction.Normalize, "volume", 300, 0, 1, 0); //volume
+	public static final int maxTrainHistory = 100; //number ticks/points backwards to keep(in data) for training
 	
 	public static final double startBalBTC = 1;
 	public static final double startBalUSD = 0;
+	
+	public static final NormalizedField trade = new NormalizedField(NormalizationAction.Normalize, "trade", 100, -100, 1, -1); //max BTC trade size
+	public static final double fee = 0.99F; //fee per trade
+	public static final double exptMaxBTC = 100;
+	public static final double exptMaxUSD = 10000;
 	
 	public static RunThread runThread;
 	public class RunThread extends Thread {
@@ -69,8 +74,12 @@ public class FXMLController implements Initializable {
 					TemporalPoint point = dataSet.getPoints().get(newidx - 1);
 					
 					//generate and add new training pair for prediction training
-					final BasicMLData inputT = dataSet.generateInputNeuralData(newidx - (INPUT_WINDOW_SIZE + PREDICT_WINDOW_SIZE) + 1); //it subtracts one from index for real index
-					final BasicMLData ideal = dataSet.generateOutputNeuralData(newidx - PREDICT_WINDOW_SIZE + 1);
+					final BasicMLData inputT = dataSet.generateInputNeuralData(newidx - (INPUT_WINDOW_SIZE + PREDICT_WINDOW_SIZE) + 1); //it subtracts 1 from index for real index
+					
+					dataSet.createPoint(Integer.MAX_VALUE); //hack to fix -1 offset sillyness, only matters if predict window is size 1
+					final BasicMLData ideal = dataSet.generateOutputNeuralData(newidx - PREDICT_WINDOW_SIZE + 1); //it subtracts 1 from index for real index
+					dataSet.getPoints().remove(newidx);
+					
 					final BasicMLDataPair pair = new BasicMLDataPair(inputT, ideal);
 					dataSet.getData().add(pair);
 					if (dataSet.getData().size() > maxTrainHistory) dataSet.getData().remove(0);
@@ -82,7 +91,7 @@ public class FXMLController implements Initializable {
 					
 					actor.train();
 					point.setData(2, actor.balBTC); point.setData(3, actor.balUSD); //add ongoing balances so that we can move our training window
-					chartAdd(lineChart, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), actor.tradeBTC*.05+50, Math.tanh(actor.balUSD/ActorNetwork.exptMaxUSD*Math.PI)*100);
+					chartAdd(lineChart, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), actor.tradeBTC*.05+50, Math.tanh(actor.balUSD/exptMaxUSD*Math.PI)*100);
 					
 					//this is where we would actually execute our trade using actor.buysellBTC and actor.tradeBTC
 					

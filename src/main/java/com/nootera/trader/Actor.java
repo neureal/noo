@@ -54,14 +54,14 @@ public class Actor {
 		epoch = 0;
 		for (int i = 0; i < 60; i++) {
 			if (FXMLController.runThread == null || FXMLController.runThread.stop) break;
-			train.iteration();
+			train.iteration(); //uses multiple threads
 			System.out.println(String.format("Actor Epoch[%5d] Score[%15.4f]", epoch, train.getError()));
 			epoch++;
 			//if (train.getError() > ActorNetwork.exptMaxUSD) break;
 		}
 		train.finishTraining();
 		
-		MLMethod method = train.getMethod();
+		MLMethod method = train.getMethod(); //winning network
 		ActorNetwork pilot = new ActorNetwork(method, this, false); //change to true to show how winning network traded
 		pilot.scoreActor();
 	}
