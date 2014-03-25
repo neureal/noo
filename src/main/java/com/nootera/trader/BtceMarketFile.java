@@ -28,6 +28,7 @@ public class BtceMarketFile {
 		int cnt = 0;
 		int last_timestamp = 0;
 		while (csv.next()) {
+			if (FXMLController.runThread == null || FXMLController.runThread.stop) break;
 			int timestamp = csv.getInt(0);
 			//if (timestamp >= 1366487996) return false;
 			if (cnt == 0) last_timestamp = timestamp;

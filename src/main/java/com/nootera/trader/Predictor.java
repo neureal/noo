@@ -32,7 +32,6 @@ import org.encog.neural.pattern.JordanPattern;
  */
 public class Predictor {
 	
-	//construct an Jordan type network
 	private static BasicNetwork createNetwork() {
 		JordanPattern pattern = new JordanPattern();
 		pattern.setInputNeurons(FXMLController.INPUT_WINDOW_SIZE*2);
@@ -70,20 +69,19 @@ public class Predictor {
 		//train = new NeuralPSO(network, new NguyenWidrowRandomizer(), score, 1000);
 		final MLTrain trainAlt = new NeuralPSO(network, new NguyenWidrowRandomizer(), score, 1000);
 		
+//		train = new MLMethodGeneticAlgorithm(new MethodFactory() {
+//			@Override
+//			public MLMethod factor() { return createNetwork(); }
+//		}, new ActorScore(), 500);
+		
 //		train = new Backpropagation(network, FXMLController.dataSet, 0.00001d, 0.0d);
 //		train.addStrategy(new Greedy());
 //		final MLTrain trainAlt = new NeuralSimulatedAnnealing(network, score, 10, 2, 100);
 		train.addStrategy(new HybridStrategy(trainAlt));
 		
 		
-		
 //		final StopTrainingStrategy stop = new StopTrainingStrategy();
 //		train.addStrategy(stop);
-		
-//		train = new MLMethodGeneticAlgorithm(new MethodFactory() {
-//			@Override
-//			public MLMethod factor() { return createNetwork(); }
-//		}, new ActorScore(), 500);
 	}
 	
 	private int epoch;

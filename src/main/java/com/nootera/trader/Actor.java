@@ -7,6 +7,7 @@ package com.nootera.trader;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
+import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MethodFactory;
@@ -16,7 +17,9 @@ import org.encog.ml.train.strategy.RequiredImprovementStrategy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.networks.training.pso.NeuralPSO;
 import org.encog.neural.pattern.FeedForwardPattern;
+import org.encog.neural.pattern.JordanPattern;
 
 /**
  *
@@ -33,20 +36,35 @@ public class Actor {
 	
 	public static final int INPUT_NEURONS = FXMLController.INPUT_WINDOW_SIZE*2;
 	public static final int INPUT_NEURONS_ALL = INPUT_NEURONS + 2 + FXMLController.PREDICT_WINDOW_SIZE;
+	
 	private static BasicNetwork createNetwork() {
-		FeedForwardPattern pattern = new FeedForwardPattern();
+		JordanPattern pattern = new JordanPattern();
 		pattern.setInputNeurons(INPUT_NEURONS_ALL);
 		pattern.addHiddenLayer(FXMLController.INPUT_WINDOW_SIZE + 2);
 		pattern.setOutputNeurons(2);
-		pattern.setActivationFunction(new ActivationSigmoid()); //0 to +1
+		pattern.setActivationFunction(new ActivationSigmoid());
 //		pattern.setActivationFunction(new ActivationTANH());
 		BasicNetwork network = (BasicNetwork)pattern.generate();
 		network.reset();
 		return network;
 	}
 	
+//	private static BasicNetwork createNetwork() {
+//		FeedForwardPattern pattern = new FeedForwardPattern();
+//		pattern.setInputNeurons(INPUT_NEURONS_ALL);
+//		pattern.addHiddenLayer(FXMLController.INPUT_WINDOW_SIZE + 2);
+//		pattern.setOutputNeurons(2);
+//		pattern.setActivationFunction(new ActivationSigmoid()); //0 to +1
+////		pattern.setActivationFunction(new ActivationTANH());
+//		BasicNetwork network = (BasicNetwork)pattern.generate();
+//		network.reset();
+//		return network;
+//	}
+	
 	private final MLTrain train;
 	public Actor() {
+//		train = new NeuralPSO(createNetwork(), new NguyenWidrowRandomizer(), new ActorScore(), 100);
+		
 		train = new MLMethodGeneticAlgorithm(new MethodFactory() {
 			@Override
 			public MLMethod factor() { return createNetwork(); }
@@ -65,6 +83,7 @@ public class Actor {
 		}
 		train.finishTraining();
 		
+		if (FXMLController.runThread == null || FXMLController.runThread.stop) return;
 		MLMethod method = train.getMethod(); //winning network
 		ActorNetwork pilot = new ActorNetwork(method, this, false); //change to true to show how winning network traded
 		pilot.scoreActor();

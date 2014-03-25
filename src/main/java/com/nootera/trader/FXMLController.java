@@ -34,8 +34,8 @@ public class FXMLController implements Initializable {
 	private static final int tickVisWindow = 90;
 	
 	public static TemporalMLDataSet dataSet;
-	public static final int INPUT_WINDOW_SIZE = 64; //1 days (1hr resolution)
-	public static final int PREDICT_WINDOW_SIZE = 5; //6 hour (1hr resolution)
+	public static final int INPUT_WINDOW_SIZE = 36; //
+	public static final int PREDICT_WINDOW_SIZE = 3; //
 	public static final int maxTrainHistory = 120; //number ticks/points backwards to keep(in data) for training
 	public static void initDataSet() {
 		dataSet = new TemporalMLDataSet(INPUT_WINDOW_SIZE, PREDICT_WINDOW_SIZE); //input points window size, predict points window size
@@ -67,55 +67,51 @@ public class FXMLController implements Initializable {
 		@Override
 		public void run() {
 			updateProgress(predictProgress, -1.0d);
-			chartAddSingle(lineChart, 1, 0.0d); //hack to visually show prediction at same tick as predicted
+			chartAddSingle(chartPrediction, 1, 0.0d); //hack to visually show prediction at same tick as predicted
+			BtceMarketFile mkt_btce = null;
 			try {
 				initDataSet();
 				Predictor predictor = new Predictor();
 				Actor actor = new Actor();
-				BtceMarketFile mkt_btce = new BtceMarketFile();
+				mkt_btce = new BtceMarketFile();
 				
 				while (mkt_btce.getNewPoint(dataSet)) {
-					if (FXMLController.runThread == null || FXMLController.runThread.stop) break;
+					if (stop) break;
 					
 					int newidx = dataSet.getPoints().size();
 					if (newidx < INPUT_WINDOW_SIZE + PREDICT_WINDOW_SIZE) continue; //give us at least a input + predict window of data (only at the beginning)
 					TemporalPoint point = dataSet.getPoints().get(newidx - 1);
 					
+					//****prediction training
 					//generate and add new training pair for prediction training
 					final BasicMLData inputT = dataSet.generateInputNeuralData(newidx - (INPUT_WINDOW_SIZE + PREDICT_WINDOW_SIZE) + 1); //it subtracts 1 from index for real index
-					
 					dataSet.createPoint(Integer.MAX_VALUE); //hack to fix -1 offset sillyness, only matters if predict window is size 1
 					final BasicMLData ideal = dataSet.generateOutputNeuralData(newidx - PREDICT_WINDOW_SIZE + 1); //it subtracts 1 from index for real index
-					dataSet.getPoints().remove(newidx);
-					
+					dataSet.getPoints().remove(newidx); //hack to fix -1 offset sillyness
 					final BasicMLDataPair pair = new BasicMLDataPair(inputT, ideal);
 					dataSet.getData().add(pair);
 					if (dataSet.getData().size() > maxTrainHistory) dataSet.getData().remove(0);
+					//train and predict
 					predictor.train();
-					
 					final BasicMLData inputP = dataSet.generateInputNeuralData(newidx - INPUT_WINDOW_SIZE + 1); //it subtracts one from index anyway
 					double[] predictions = predictor.predict(inputP);
 					for (int i=0; i < predictions.length; i++) point.setData(4+i, predictions[i]); //add prediction data share output
-					chartAdd(lineChart, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), 0.0d, 0.0d);
+					//chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), 0.0d, 0.0d);
 					
-					//action training
-//					actor.train();
-//					point.setData(2, actor.balBTC); //add ongoing balances so that we can move our training window
-//					point.setData(3, actor.balUSD);
-//					chartAdd(lineChart, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), actor.tradeBTC*0.05d+50d, Math.tanh(actor.balUSD/exptMaxUSD*Math.PI)*100d);
+					//****action training
+					actor.train();
+					point.setData(2, actor.balBTC); //add ongoing balances so that we can move our training window
+					point.setData(3, actor.balUSD);
+					chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), actor.tradeBTC*0.05d+50d, Math.tanh(actor.balUSD/exptMaxUSD*Math.PI)*100d);
 					
 					
-					//this is where we would actually execute our trade using actor.buysellBTC and actor.tradeBTC
+					//****this is where we would actually execute our trade using actor.buysellBTC and actor.tradeBTC
 					
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException ex) {
-						break;
-					}
+					Thread.sleep(200);
 				}
-				mkt_btce.close();
-				
+			} catch (InterruptedException ex) {
 			} finally {
+				if (mkt_btce != null) mkt_btce.close();
 				updateProgress(predictProgress, 0.0d);
 			}
 		}
@@ -126,7 +122,8 @@ public class FXMLController implements Initializable {
     
     @FXML
     public TextArea outBox;
-	public LineChart lineChart;
+	public LineChart chartPrediction;
+	public LineChart chartTrading;
 	public ProgressBar predictProgress;
 	
     @FXML
@@ -141,7 +138,7 @@ public class FXMLController implements Initializable {
 		System.out.println("******** Stop");
 		if (runThread != null) {
 			runThread.stop = true;
-			runThread.interrupt();
+			//runThread.interrupt();
 		}
     }
 	
@@ -175,25 +172,31 @@ public class FXMLController implements Initializable {
 	}
 	
 	public static int chartx = 1;
-	public static void chartAdd(final LineChart chart, final double value0, final double value1, final double value2, final double value3) {
+	public static void chartAdd(final LineChart chart1, final LineChart chart2, final double value0, final double value1, final double value2, final double value3) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				XYChart.Series series0 = (XYChart.Series)chart.getData().get(0);
+				XYChart.Series series0 = (XYChart.Series)chart1.getData().get(0);
 				series0.getData().add(new XYChart.Data(chartx, value0));
-				XYChart.Series series1 = (XYChart.Series)chart.getData().get(1);
+				XYChart.Series series1 = (XYChart.Series)chart1.getData().get(1);
 				series1.getData().add(new XYChart.Data(chartx, value1));
-				XYChart.Series series2 = (XYChart.Series)chart.getData().get(2);
+				
+				XYChart.Series series2 = (XYChart.Series)chart2.getData().get(0);
 				series2.getData().add(new XYChart.Data(chartx, value2));
-				XYChart.Series series3 = (XYChart.Series)chart.getData().get(3);
+				XYChart.Series series3 = (XYChart.Series)chart2.getData().get(1);
 				series3.getData().add(new XYChart.Data(chartx, value3));
+				
 				chartx++;
 				
-				NumberAxis xaxis = (NumberAxis)chart.getXAxis();
-				xaxis.setUpperBound(chartx);
+				NumberAxis xaxis1 = (NumberAxis)chart1.getXAxis();
+				xaxis1.setUpperBound(chartx);
+				
+				NumberAxis xaxis2 = (NumberAxis)chart2.getXAxis();
+				xaxis2.setUpperBound(chartx);
 				
 				if (chartx > tickVisWindow) {
-					xaxis.setLowerBound(xaxis.getLowerBound() + 1);
+					xaxis1.setLowerBound(xaxis1.getLowerBound() + 1);
+					xaxis2.setLowerBound(xaxis2.getLowerBound() + 1);
 					series0.getData().remove(0);
 					series1.getData().remove(0);
 					series2.getData().remove(0);
@@ -209,23 +212,31 @@ public class FXMLController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 		redirectSystemStreams(outBox);
 		
-		NumberAxis xaxis = (NumberAxis)lineChart.getXAxis();
-		xaxis.setLowerBound(1);
-		xaxis.setUpperBound(chartx);
+		//Prediction Chart
+		NumberAxis xaxis1 = (NumberAxis)chartPrediction.getXAxis();
+		xaxis1.setLowerBound(1);
+		xaxis1.setUpperBound(chartx);
 		
-		XYChart.Series series1 = new XYChart.Series();
-        series1.setName("Actual");
+		XYChart.Series series0 = new XYChart.Series();
+        series0.setName("Actual");
         
+        XYChart.Series series1 = new XYChart.Series();
+        series1.setName("Prediction");
+		
+        chartPrediction.getData().addAll(series0, series1);
+		
+		//Trading Chart
+		NumberAxis xaxis2 = (NumberAxis)chartTrading.getXAxis();
+		xaxis2.setLowerBound(1);
+		xaxis2.setUpperBound(chartx);
+		
         XYChart.Series series2 = new XYChart.Series();
-        series2.setName("Prediction");
-        
-        XYChart.Series series3 = new XYChart.Series();
-        series3.setName("Buy/Sell");
+        series2.setName("Buy/Sell");
 		
-        XYChart.Series series4 = new XYChart.Series();
-        series4.setName("USD");
+        XYChart.Series series3 = new XYChart.Series();
+        series3.setName("USD");
         
-        lineChart.getData().addAll(series1, series2, series3, series4);
+        chartTrading.getData().addAll(series2, series3);
     }
 	
 
