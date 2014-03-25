@@ -6,6 +6,7 @@
 package com.nootera.trader;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.CalculateScore;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MethodFactory;
@@ -23,19 +24,22 @@ import org.encog.neural.pattern.FeedForwardPattern;
  */
 public class Actor {
 	//winning values after train
-	public double balBTC = 0;
-	public double balUSD = 0;
+	public double balBTC = 0.0d;
+	public double balUSD = 0.0d;
 	public int totaltrades = 0;
 	
 	public int buysellBTC = 0; //0 = do nothing, +1 = buy, -1 = sell
-	public double tradeBTC = 0;
+	public double tradeBTC = 0.0d;
 	
+	public static final int INPUT_NEURONS = FXMLController.INPUT_WINDOW_SIZE*2;
+	public static final int INPUT_NEURONS_ALL = INPUT_NEURONS + 2 + FXMLController.PREDICT_WINDOW_SIZE;
 	private static BasicNetwork createNetwork() {
 		FeedForwardPattern pattern = new FeedForwardPattern();
-		pattern.setInputNeurons(27);
-		pattern.addHiddenLayer(13);
+		pattern.setInputNeurons(INPUT_NEURONS_ALL);
+		pattern.addHiddenLayer(FXMLController.INPUT_WINDOW_SIZE + 2);
 		pattern.setOutputNeurons(2);
 		pattern.setActivationFunction(new ActivationSigmoid()); //0 to +1
+//		pattern.setActivationFunction(new ActivationTANH());
 		BasicNetwork network = (BasicNetwork)pattern.generate();
 		network.reset();
 		return network;
@@ -52,7 +56,7 @@ public class Actor {
 	private int epoch;
 	public void train() {
 		epoch = 0;
-		for (int i = 0; i < 60; i++) {
+		for (int i = 0; i < 40; i++) {
 			if (FXMLController.runThread == null || FXMLController.runThread.stop) break;
 			train.iteration(); //uses multiple threads
 			System.out.println(String.format("Actor Epoch[%5d] Score[%15.4f]", epoch, train.getError()));

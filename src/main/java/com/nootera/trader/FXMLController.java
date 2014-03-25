@@ -31,9 +31,12 @@ import org.encog.util.arrayutil.NormalizedField;
 
 public class FXMLController implements Initializable {
 	
+	private static final int tickVisWindow = 90;
+	
 	public static TemporalMLDataSet dataSet;
-	public static final int INPUT_WINDOW_SIZE = 12;
-	public static final int PREDICT_WINDOW_SIZE = 1;
+	public static final int INPUT_WINDOW_SIZE = 64; //1 days (1hr resolution)
+	public static final int PREDICT_WINDOW_SIZE = 5; //6 hour (1hr resolution)
+	public static final int maxTrainHistory = 120; //number ticks/points backwards to keep(in data) for training
 	public static void initDataSet() {
 		dataSet = new TemporalMLDataSet(INPUT_WINDOW_SIZE, PREDICT_WINDOW_SIZE); //input points window size, predict points window size
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, true)); //price
@@ -41,25 +44,30 @@ public class FXMLController implements Initializable {
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //current BTC total
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //current USD total
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 1 tick
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 2 tick
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 3 tick
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 4 tick
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 5 tick
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 6 tick
 	}
-	public static final NormalizedField normPrice = new NormalizedField(NormalizationAction.Normalize, "price", 1200, 0, 1, 0); //price
-	public static final NormalizedField normVolume = new NormalizedField(NormalizationAction.Normalize, "volume", 300, 0, 1, 0); //volume
-	public static final int maxTrainHistory = 100; //number ticks/points backwards to keep(in data) for training
 	
-	public static final double startBalBTC = 1;
-	public static final double startBalUSD = 0;
+	public static final NormalizedField normPrice = new NormalizedField(NormalizationAction.Normalize, "price", 1200.0d, 0.0d, 1.0d, 0.0d); //price
+	public static final NormalizedField normVolume = new NormalizedField(NormalizationAction.Normalize, "volume", 100000.0d, 0.0d, 1.0d, 0.0d); //volume
 	
-	public static final NormalizedField trade = new NormalizedField(NormalizationAction.Normalize, "trade", 100, -100, 1, -1); //max BTC trade size
-	public static final double fee = 0.99F; //fee per trade
-	public static final double exptMaxBTC = 100;
-	public static final double exptMaxUSD = 10000;
+	public static final double startBalBTC = 1.0d;
+	public static final double startBalUSD = 0.0d;
+	public static final NormalizedField trade = new NormalizedField(NormalizationAction.Normalize, "trade", 100.0d, -100.0d, 1.0d, -1.0d); //max BTC trade size
+	public static final double fee = 0.99d; //fee per trade
+	public static final double exptMaxBTC = 100.0d;
+	public static final double exptMaxUSD = 10000.0d;
 	
 	public static RunThread runThread;
 	public class RunThread extends Thread {
 		public Boolean stop = false;
 		@Override
 		public void run() {
-			updateProgress(predictProgress, -1.0F);
+			updateProgress(predictProgress, -1.0d);
+			chartAddSingle(lineChart, 1, 0.0d); //hack to visually show prediction at same tick as predicted
 			try {
 				initDataSet();
 				Predictor predictor = new Predictor();
@@ -88,10 +96,14 @@ public class FXMLController implements Initializable {
 					final BasicMLData inputP = dataSet.generateInputNeuralData(newidx - INPUT_WINDOW_SIZE + 1); //it subtracts one from index anyway
 					double[] predictions = predictor.predict(inputP);
 					for (int i=0; i < predictions.length; i++) point.setData(4+i, predictions[i]); //add prediction data share output
+					chartAdd(lineChart, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), 0.0d, 0.0d);
 					
-					actor.train();
-					point.setData(2, actor.balBTC); point.setData(3, actor.balUSD); //add ongoing balances so that we can move our training window
-					chartAdd(lineChart, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), actor.tradeBTC*.05+50, Math.tanh(actor.balUSD/exptMaxUSD*Math.PI)*100);
+					//action training
+//					actor.train();
+//					point.setData(2, actor.balBTC); //add ongoing balances so that we can move our training window
+//					point.setData(3, actor.balUSD);
+//					chartAdd(lineChart, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), actor.tradeBTC*0.05d+50d, Math.tanh(actor.balUSD/exptMaxUSD*Math.PI)*100d);
+					
 					
 					//this is where we would actually execute our trade using actor.buysellBTC and actor.tradeBTC
 					
@@ -104,7 +116,7 @@ public class FXMLController implements Initializable {
 				mkt_btce.close();
 				
 			} finally {
-				updateProgress(predictProgress, 0.0F);
+				updateProgress(predictProgress, 0.0d);
 			}
 		}
 	}
@@ -152,30 +164,40 @@ public class FXMLController implements Initializable {
 		});
 	}
 	
-	public static int chartx = 1;
-	public static void chartAdd(final LineChart chart, final double series1, final double series2, final double series3, final double series4) {
+	public static void chartAddSingle(final LineChart chart, final int seriesIdx, final double value) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				XYChart.Series s1 = (XYChart.Series)chart.getData().get(0);
-				s1.getData().add(new XYChart.Data(chartx, series1));
-				XYChart.Series s2 = (XYChart.Series)chart.getData().get(1);
-				s2.getData().add(new XYChart.Data(chartx, series2));
-				XYChart.Series s3 = (XYChart.Series)chart.getData().get(2);
-				s3.getData().add(new XYChart.Data(chartx, series3));
-				XYChart.Series s4 = (XYChart.Series)chart.getData().get(3);
-				s4.getData().add(new XYChart.Data(chartx, series4));
+				XYChart.Series s = (XYChart.Series)chart.getData().get(seriesIdx);
+				s.getData().add(new XYChart.Data(chartx, value));
+			}
+		});
+	}
+	
+	public static int chartx = 1;
+	public static void chartAdd(final LineChart chart, final double value0, final double value1, final double value2, final double value3) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				XYChart.Series series0 = (XYChart.Series)chart.getData().get(0);
+				series0.getData().add(new XYChart.Data(chartx, value0));
+				XYChart.Series series1 = (XYChart.Series)chart.getData().get(1);
+				series1.getData().add(new XYChart.Data(chartx, value1));
+				XYChart.Series series2 = (XYChart.Series)chart.getData().get(2);
+				series2.getData().add(new XYChart.Data(chartx, value2));
+				XYChart.Series series3 = (XYChart.Series)chart.getData().get(3);
+				series3.getData().add(new XYChart.Data(chartx, value3));
 				chartx++;
 				
 				NumberAxis xaxis = (NumberAxis)chart.getXAxis();
 				xaxis.setUpperBound(chartx);
 				
-				if (chartx > 50) {
+				if (chartx > tickVisWindow) {
 					xaxis.setLowerBound(xaxis.getLowerBound() + 1);
-					s1.getData().remove(0);
-					s2.getData().remove(0);
-					s3.getData().remove(0);
-					s4.getData().remove(0);
+					series0.getData().remove(0);
+					series1.getData().remove(0);
+					series2.getData().remove(0);
+					series3.getData().remove(0);
 				}
 				
 				//xaxis.invalidateRange(chart.getData());

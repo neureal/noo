@@ -29,15 +29,14 @@ public class ActorNetwork {
 	}
 	
 	public double scoreActor() {
-		double balBTC = 0;
-		double balUSD = 0;
+		double balBTC = 0.0d;
+		double balUSD = 0.0d;
 		int totaltrades = 0;
 		
 		int buysellBTC = 0; //0 = do nothing, +1 = buy, -1 = sell
-		double tradeBTC = 0;
+		double tradeBTC = 0.0d;
 		
 		List<TemporalPoint> points = FXMLController.dataSet.getPoints();
-		//FXMLController.dataSet.sortPoints(); //make sure they are in the right order
 		
 		//i = emulated current data tick(=last point within input window), i+(1,2,6) = future ticks
 		int start = Math.max(FXMLController.INPUT_WINDOW_SIZE + FXMLController.PREDICT_WINDOW_SIZE - 1, points.size()-FXMLController.maxTrainHistory);
@@ -51,10 +50,10 @@ public class ActorNetwork {
 			}
 			
 			MLData input = FXMLController.dataSet.generateInputNeuralData(i - FXMLController.INPUT_WINDOW_SIZE + 2); //this function goes back one to grab data, actual index start is minus one from this index
-			input = new BasicMLData(Arrays.copyOf(input.getData(), 27));
-			input.setData(24, point.getData(4)); //currently predicted price for next tick
-			input.setData(25, Math.tanh(balBTC/FXMLController.exptMaxBTC*Math.PI));
-			input.setData(26, Math.tanh(balUSD/FXMLController.exptMaxUSD*Math.PI));
+			input = new BasicMLData(Arrays.copyOf(input.getData(), Actor.INPUT_NEURONS_ALL));
+			input.setData(Actor.INPUT_NEURONS, Math.tanh(balBTC/FXMLController.exptMaxBTC*Math.PI));
+			input.setData(Actor.INPUT_NEURONS+1, Math.tanh(balUSD/FXMLController.exptMaxUSD*Math.PI));
+			for (int j=0; j < FXMLController.PREDICT_WINDOW_SIZE; j++) input.setData(Actor.INPUT_NEURONS+2+j, point.getData(4+j)); //currently predicted price for next tick
 			
 			MLData output = ((MLRegression)this.method).compute(input);
 			
@@ -65,7 +64,7 @@ public class ActorNetwork {
 				double balUSDo = balUSD;
 				balUSD -= tradeBTC*price;
 				if (balUSD < 0) { //buy as much as we have USD for
-					balUSD = 0;
+					balUSD = 0.0d;
 					tradeBTC = balUSDo/price;
 				}
 				balBTC += tradeBTC*FXMLController.fee;
@@ -78,7 +77,7 @@ public class ActorNetwork {
 				double balBTCo = balBTC;
 				balBTC -= tradeBTC;
 				if (balBTC < 0) { //sell as much BTC as we have
-					balBTC = 0;
+					balBTC = 0.0d;
 					tradeBTC = balBTCo;
 				}
 				balUSD += tradeBTC*price*FXMLController.fee;
