@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.nootera.trader;
+package com.nootera.noo;
 
 import java.io.File;
 import org.encog.ml.data.temporal.TemporalMLDataSet;

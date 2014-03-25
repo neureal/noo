@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.nootera.trader;
+package com.nootera.noo;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -20,7 +20,7 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        stage.setTitle("Trader");
+        stage.setTitle("Noo");
 		stage.initStyle(StageStyle.UNDECORATED);
         stage.centerOnScreen();
 		

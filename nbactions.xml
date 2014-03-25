@@ -7,7 +7,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-jar ${basedir}/target/Trader-1.0-SNAPSHOT.jar</exec.args>
+                <exec.args>-jar ${basedir}/target/Noo-1.0-SNAPSHOT.jar</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>
@@ -18,7 +18,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -jar ${basedir}/target/Trader-1.0-SNAPSHOT.jar</exec.args>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -jar ${basedir}/target/Noo-1.0-SNAPSHOT.jar</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>

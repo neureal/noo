@@ -3,13 +3,14 @@
 <?import java.lang.*?>
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?scenebuilder-stylesheet ../styles/Styles.css?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" snapToPixel="true" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nootera.trader.FXMLController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" snapToPixel="true" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nootera.noo.FXMLController">
   <children>
     <TabPane layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="768.0" rotateGraphic="false" side="LEFT" tabClosingPolicy="UNAVAILABLE">
       <tabs>
@@ -17,7 +18,7 @@
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children>
-                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" legendSide="TOP" prefHeight="382.0" prefWidth="744.0" title="Prediction" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-35.0" layoutY="-58.0" legendSide="TOP" prefHeight="382.0" prefWidth="744.0" title="Prediction" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                   <xAxis>
                     <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickLabelsVisible="true" tickMarkVisible="true" upperBound="12.0" />
                   </xAxis>
@@ -61,7 +62,14 @@
 </Tab>
 <Tab text="Wallet">
 <content>
-<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0" />
+<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
+<children>
+<ImageView fitHeight="42.0" fitWidth="200.0" layoutX="10.0" layoutY="10.0">
+<image>
+<Image url="@noo-coin-logo-88px.png" />
+</image>
+</ImageView>
+</children></AnchorPane>
 </content>
 </Tab>
         <Tab text="Output">
@@ -78,5 +86,10 @@
     <Button fx:id="closeButton" layoutX="838.0" mnemonicParsing="false" onAction="#onCloseButtonAction" prefHeight="32.0" prefWidth="32.0" text="" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
     <Line disable="true" endX="-88.0" endY="14.0" startX="-100.0" stroke="WHITE" strokeWidth="2.2" AnchorPane.rightAnchor="8.44" AnchorPane.topAnchor="7.44" />
     <Line disable="true" endX="-88.0" endY="14.0" layoutX="907.0" layoutY="9.0" rotate="90.0" startX="-100.0" stroke="WHITE" strokeWidth="2.2" AnchorPane.rightAnchor="8.44" AnchorPane.topAnchor="7.44" />
+<ImageView layoutX="768.0" layoutY="528.0" preserveRatio="true">
+<image>
+<Image url="@noo-logo-up-32px.png" />
+</image>
+</ImageView>
     </children>
 </AnchorPane>

@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.nootera.trader;
+package com.nootera.noo;
 
 import java.util.Arrays;
 import java.util.List;

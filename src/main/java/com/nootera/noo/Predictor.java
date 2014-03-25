@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.nootera.trader;
+package com.nootera.noo;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
