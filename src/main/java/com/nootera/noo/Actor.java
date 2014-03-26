@@ -27,13 +27,13 @@ public class Actor {
 	public int buysellBTC = 0; //0 = do nothing, +1 = buy, -1 = sell
 	public double tradeBTC = 0.0d;
 	
-	public static final int INPUT_NEURONS = FXMLController.INPUT_WINDOW_SIZE*2;
+	public static final int INPUT_NEURONS = FXMLController.INPUT_WINDOW_SIZE*FXMLController.descInputCount;
 	public static final int INPUT_NEURONS_ALL = INPUT_NEURONS + 2 + FXMLController.PREDICT_WINDOW_SIZE;
 	
 	private static BasicNetwork createNetwork() {
 		JordanPattern pattern = new JordanPattern();
 		pattern.setInputNeurons(INPUT_NEURONS_ALL);
-		pattern.addHiddenLayer(FXMLController.INPUT_WINDOW_SIZE + 2);
+		pattern.addHiddenLayer(FXMLController.INPUT_WINDOW_SIZE + FXMLController.descInputCount);
 		pattern.setOutputNeurons(2);
 		pattern.setActivationFunction(new ActivationSigmoid());
 //		pattern.setActivationFunction(new ActivationTANH());
@@ -45,7 +45,7 @@ public class Actor {
 //	private static BasicNetwork createNetwork() {
 //		FeedForwardPattern pattern = new FeedForwardPattern();
 //		pattern.setInputNeurons(INPUT_NEURONS_ALL);
-//		pattern.addHiddenLayer(FXMLController.INPUT_WINDOW_SIZE + 2);
+//		pattern.addHiddenLayer(FXMLController.INPUT_WINDOW_SIZE + FXMLController.descInputCount);
 //		pattern.setOutputNeurons(2);
 //		pattern.setActivationFunction(new ActivationSigmoid()); //0 to +1
 ////		pattern.setActivationFunction(new ActivationTANH());
@@ -56,23 +56,23 @@ public class Actor {
 	
 	private final MLTrain train;
 	public Actor() {
-//		train = new NeuralPSO(createNetwork(), new NguyenWidrowRandomizer(), new ActorScore(), 100);
+//		train = new NeuralPSO(createNetwork(), new NguyenWidrowRandomizer(), new ActorScore(), FXMLController.actTrainCycles);
 		
 		train = new MLMethodGeneticAlgorithm(new MethodFactory() {
 			@Override
 			public MLMethod factor() { return createNetwork(); }
-		}, new ActorScore(), 500);
+		}, new ActorScore(), FXMLController.actTrainCycles);
 	}
 	
 	private int epoch;
 	public void train() {
 		epoch = 0;
-		for (int i = 0; i < 40; i++) {
+		for (int i = 0; i < FXMLController.ActTrainEpochs; i++) {
 			if (FXMLController.runThread == null || FXMLController.runThread.stop) break;
 			train.iteration(); //uses multiple threads
 			System.out.println(String.format("Actor Epoch[%5d] Score[%15.4f]", epoch, train.getError()));
 			epoch++;
-			//if (train.getError() > ActorNetwork.exptMaxUSD) break;
+			if (train.getError() > FXMLController.exptTotalUSD) break;
 		}
 		train.finishTraining();
 		

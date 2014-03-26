@@ -1,5 +1,5 @@
 /*
- * Copyright Â© 2014 BownCo
+ * Copyright Ã‚Â© 2014 BownCo
  * All rights reserved.
  */
 
@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -34,32 +35,49 @@ public class FXMLController implements Initializable {
 	private static final int tickVisWindow = 90;
 	
 	public static TemporalMLDataSet dataSet;
-	public static final int INPUT_WINDOW_SIZE = 36; //
-	public static final int PREDICT_WINDOW_SIZE = 3; //
-	public static final int maxTrainHistory = 120; //number ticks/points backwards to keep(in data) for training
+	public static final int INPUT_WINDOW_SIZE = 48; //
+	public static final int PREDICT_WINDOW_SIZE = 1; //
+	public static final int maxTrainHistory = 200; //number ticks/points backwards to keep(in data) for training
+	public static final int predictTrainEpochs = 20; //
+	public static final int predictTrainCycles = 400; //
+	public static final int ActTrainEpochs = 160; //
+	public static final int actTrainCycles = 400; //
+	public static final long minTickTime = 200; //
 	public static void initDataSet() {
 		dataSet = new TemporalMLDataSet(INPUT_WINDOW_SIZE, PREDICT_WINDOW_SIZE); //input points window size, predict points window size
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, true)); //price
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //volume
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //current BTC total
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //current USD total
+//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //high
+//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //low
+//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //bid
+//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //ask
+//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //timestamp
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 1 tick
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 2 tick
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 3 tick
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 4 tick
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 5 tick
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 6 tick
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 7 tick
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 8 tick
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 9 tick
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 10 tick
 	}
+	public static final int descPredStart = 4; //predicted price description start
+	public static final int descInputCount = 2; //total number of values per input
 	
 	public static final NormalizedField normPrice = new NormalizedField(NormalizationAction.Normalize, "price", 1200.0d, 0.0d, 1.0d, 0.0d); //price
 	public static final NormalizedField normVolume = new NormalizedField(NormalizationAction.Normalize, "volume", 100000.0d, 0.0d, 1.0d, 0.0d); //volume
+	public static final NormalizedField normTimestamp = new NormalizedField(NormalizationAction.Normalize, "timestamp", 329709278L, 0L, 1.0d, 0.0d); //seconds timestamp (unix Epoch timestamp)
 	
 	public static final double startBalBTC = 1.0d;
 	public static final double startBalUSD = 0.0d;
 	public static final NormalizedField trade = new NormalizedField(NormalizationAction.Normalize, "trade", 100.0d, -100.0d, 1.0d, -1.0d); //max BTC trade size
 	public static final double fee = 0.99d; //fee per trade
-	public static final double exptMaxBTC = 100.0d;
-	public static final double exptMaxUSD = 10000.0d;
+	public static final double exptTotalBTC = 100.0d;
+	public static final double exptTotalUSD = 10000.0d;
 	
 	public static RunThread runThread;
 	public class RunThread extends Thread {
@@ -68,48 +86,53 @@ public class FXMLController implements Initializable {
 		public void run() {
 			updateProgress(predictProgress, -1.0d);
 			chartAddSingle(chartPrediction, 1, 0.0d); //hack to visually show prediction at same tick as predicted
-			BtceMarketFile mkt_btce = null;
+			GetMarketFile mkt_btce = null;
 			try {
 				initDataSet();
 				Predictor predictor = new Predictor();
 				Actor actor = new Actor();
-				mkt_btce = new BtceMarketFile();
+				mkt_btce = new GetMarketFile();
 				
 				while (mkt_btce.getNewPoint(dataSet)) {
+				//while (GetTicker.getNewPoint(dataSet)) {
 					if (stop) break;
+					long startT = (new Date()).getTime();
 					
 					int newidx = dataSet.getPoints().size();
-					if (newidx < INPUT_WINDOW_SIZE + PREDICT_WINDOW_SIZE) continue; //give us at least a input + predict window of data (only at the beginning)
-					TemporalPoint point = dataSet.getPoints().get(newidx - 1);
-					
-					//****prediction training
-					//generate and add new training pair for prediction training
-					final BasicMLData inputT = dataSet.generateInputNeuralData(newidx - (INPUT_WINDOW_SIZE + PREDICT_WINDOW_SIZE) + 1); //it subtracts 1 from index for real index
-					dataSet.createPoint(Integer.MAX_VALUE); //hack to fix -1 offset sillyness, only matters if predict window is size 1
-					final BasicMLData ideal = dataSet.generateOutputNeuralData(newidx - PREDICT_WINDOW_SIZE + 1); //it subtracts 1 from index for real index
-					dataSet.getPoints().remove(newidx); //hack to fix -1 offset sillyness
-					final BasicMLDataPair pair = new BasicMLDataPair(inputT, ideal);
-					dataSet.getData().add(pair);
-					if (dataSet.getData().size() > maxTrainHistory) dataSet.getData().remove(0);
-					//train and predict
-					predictor.train();
-					final BasicMLData inputP = dataSet.generateInputNeuralData(newidx - INPUT_WINDOW_SIZE + 1); //it subtracts one from index anyway
-					double[] predictions = predictor.predict(inputP);
-					for (int i=0; i < predictions.length; i++) point.setData(4+i, predictions[i]); //add prediction data share output
-					//chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), 0.0d, 0.0d);
-					
-					//****action training
-					actor.train();
-					point.setData(2, actor.balBTC); //add ongoing balances so that we can move our training window
-					point.setData(3, actor.balUSD);
-					chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(4)), actor.tradeBTC*0.05d+50d, Math.tanh(actor.balUSD/exptMaxUSD*Math.PI)*100d);
-					
-					
-					//****this is where we would actually execute our trade using actor.buysellBTC and actor.tradeBTC
-					
-					Thread.sleep(200);
+					if (newidx >= INPUT_WINDOW_SIZE + PREDICT_WINDOW_SIZE) { //give us at least a input + predict window of data (only at the beginning)
+						TemporalPoint point = dataSet.getPoints().get(newidx - 1);
+
+						//****prediction training
+						//generate and add new training pair for prediction training
+						final BasicMLData inputT = dataSet.generateInputNeuralData(newidx - (INPUT_WINDOW_SIZE + PREDICT_WINDOW_SIZE) + 1); //it subtracts 1 from index for real index
+						dataSet.createPoint(Integer.MAX_VALUE); //hack to fix -1 offset sillyness, only matters if predict window is size 1
+						final BasicMLData ideal = dataSet.generateOutputNeuralData(newidx - PREDICT_WINDOW_SIZE + 1); //it subtracts 1 from index for real index
+						dataSet.getPoints().remove(newidx); //hack to fix -1 offset sillyness
+						final BasicMLDataPair pair = new BasicMLDataPair(inputT, ideal);
+						dataSet.getData().add(pair);
+						if (dataSet.getData().size() > maxTrainHistory) dataSet.getData().remove(0);
+						//train and predict
+						predictor.train();
+						final BasicMLData inputP = dataSet.generateInputNeuralData(newidx - INPUT_WINDOW_SIZE + 1); //it subtracts one from index anyway
+						double[] predictions = predictor.predict(inputP);
+						for (int i=0; i < predictions.length; i++) point.setData(descPredStart+i, predictions[i]); //add prediction data share output
+						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), 0.0d, 0.0d);
+
+						//****action training
+//						actor.train();
+//						point.setData(2, actor.balBTC); //add ongoing balances so that we can move our training window
+//						point.setData(3, actor.balUSD);
+//						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), actor.tradeBTC*0.05d+50d, Math.tanh(actor.balUSD/exptTotalUSD*Math.PI)*100d);
+
+
+						//****this is where we would actually execute our trade using actor.buysellBTC and actor.tradeBTC
+					}
+					long elapsedT = (new Date()).getTime() - startT;
+					if (elapsedT < minTickTime) Thread.sleep(minTickTime - elapsedT);
+					else Thread.sleep(200);
 				}
 			} catch (InterruptedException ex) {
+			//} catch (IOException ex) {
 			} finally {
 				if (mkt_btce != null) mkt_btce.close();
 				updateProgress(predictProgress, 0.0d);

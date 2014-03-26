@@ -10,18 +10,18 @@ import org.encog.ml.data.temporal.TemporalMLDataSet;
 import org.encog.ml.data.temporal.TemporalPoint;
 import org.encog.util.csv.ReadCSV;
 
-public class BtceMarketFile {
+public class GetMarketFile {
 	private final File history;
 	private final ReadCSV csv;
 	public int sequenceNumber;
 	
-	public BtceMarketFile() {
+	public GetMarketFile() {
 		sequenceNumber = 1;
 		history = new File(".", "btceUSD.csv");
 		csv = new ReadCSV(history.toString(), false, ',');
 	}
 	
-	private static final int TIME_RESOLUTION = 60*60*24; //1 day
+	private static final int TIME_RESOLUTION = 60*60; //1 day
 	public boolean getNewPoint(TemporalMLDataSet dataSet) {
 		double priceT = 0.0d;
 		double volumeT = 0.0d;

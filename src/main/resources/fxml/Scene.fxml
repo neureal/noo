@@ -72,7 +72,7 @@
 </children></AnchorPane>
 </content>
 </Tab>
-        <Tab text="Output">
+        <Tab text="Log">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
               <children>

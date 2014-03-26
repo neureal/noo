@@ -12,8 +12,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.temporal.TemporalPoint;
-import org.encog.util.arrayutil.NormalizationAction;
-import org.encog.util.arrayutil.NormalizedField;
+import org.encog.neural.networks.BasicNetwork;
 
 public class ActorNetwork {
 
@@ -52,11 +51,11 @@ public class ActorNetwork {
 			
 			MLData input = FXMLController.dataSet.generateInputNeuralData(i - FXMLController.INPUT_WINDOW_SIZE + 2); //this function goes back one to grab data, actual index start is minus one from this index
 			input = new BasicMLData(Arrays.copyOf(input.getData(), Actor.INPUT_NEURONS_ALL));
-			input.setData(Actor.INPUT_NEURONS, Math.tanh(balBTC/FXMLController.exptMaxBTC*Math.PI));
-			input.setData(Actor.INPUT_NEURONS+1, Math.tanh(balUSD/FXMLController.exptMaxUSD*Math.PI));
-			for (int j=0; j < FXMLController.PREDICT_WINDOW_SIZE; j++) input.setData(Actor.INPUT_NEURONS+2+j, point.getData(4+j)); //currently predicted price for next tick
+			input.setData(Actor.INPUT_NEURONS, Math.tanh(balBTC/FXMLController.exptTotalBTC*Math.PI));
+			input.setData(Actor.INPUT_NEURONS+1, Math.tanh(balUSD/FXMLController.exptTotalUSD*Math.PI));
+			for (int j=0; j < FXMLController.PREDICT_WINDOW_SIZE; j++) input.setData(Actor.INPUT_NEURONS+2+j, point.getData(FXMLController.descPredStart+j)); //currently predicted price for next tick
 			
-			MLData output = ((MLRegression)this.method).compute(input);
+			MLData output = ((BasicNetwork)this.method).compute(input);
 			
 			
 			tradeBTC = Math.round(FXMLController.trade.deNormalize(output.getData(0)-output.getData(1))); //positive=buyBTC,negative=sellBTC
