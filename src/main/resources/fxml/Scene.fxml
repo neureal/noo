@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
@@ -12,13 +15,377 @@
 
 <AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" snapToPixel="true" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nootera.noo.FXMLController">
   <children>
-    <TabPane layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="768.0" rotateGraphic="false" side="LEFT" tabClosingPolicy="UNAVAILABLE">
+    <TabPane layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="768.0" rotateGraphic="false" side="LEFT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0">
       <tabs>
-        <Tab text="Grokker">
+<Tab text="Wallet">
+<content>
+<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
+<children><StackPane mouseTransparent="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<children>
+<Group id="_root" layoutX="-130.0" layoutY="-200.0" scaleX="0.4" scaleY="0.4" xmlns:fxsvg="http://efxclipse.org/fxml-svg">
+	<children>
+		<Group id="coin" layoutX="-13.0" layoutY="-5.0" opacity="1.0">
+			<children>
+				<SVGPath content="M982,512.002C982,771.574,771.575,982,512,982   C252.426,982,42,771.574,42,512.002C42,252.425,252.426,42,512,42C771.575,42,982,252.425,982,512.002z" opacity="1" strokeWidth="10.0">
+					<fill>
+						<Color>
+							<red>1.0</red>
+							<green>1.0</green>
+							<blue>1.0</blue>
+						</Color>
+					</fill>
+					<stroke>
+						<Color>
+							<red>0.0</red>
+							<green>0.0</green>
+							<blue>0.0</blue>
+						</Color>
+					</stroke>
+				</SVGPath>
+				<SVGPath content="M945,512.002C945,751.139,751.14,945,512,945S79,751.139,79,512.002   C79,272.859,272.86,79,512,79S945,272.859,945,512.002z" opacity="1" strokeWidth="10.0">
+					<fill>
+						<Color>
+							<red>1.0</red>
+							<green>1.0</green>
+							<blue>1.0</blue>
+						</Color>
+					</fill>
+					<stroke>
+						<Color>
+							<red>0.0</red>
+							<green>0.0</green>
+							<blue>0.0</blue>
+						</Color>
+					</stroke>
+				</SVGPath>
+			</children>
+		</Group>
+		<Group id="letter" opacity="1.0">
+			<children>
+						<SVGPath content="M740,822.14h-85.103V377.147l-348.458,453.46H284V202.283h84.68v444.569l348.88-453.46H740V822.14z" opacity="1">
+						</SVGPath>
+			</children>
+		</Group>
+	</children>
+<effect>
+<ColorAdjust brightness="0.95" />
+</effect>
+</Group>
+</children></StackPane>
+<Group id="_root" layoutX="209.0" layoutY="-471.0" scaleX="0.06" scaleY="0.06" AnchorPane.rightAnchor="-439.0" AnchorPane.topAnchor="-440.0">
+<children>
+<Group id="coin" layoutX="-13.0" layoutY="-5.0" opacity="1.0">
+<children>
+<SVGPath content="M982,512.002C982,771.574,771.575,982,512,982   C252.426,982,42,771.574,42,512.002C42,252.425,252.426,42,512,42C771.575,42,982,252.425,982,512.002z" opacity="1" strokeWidth="10.0">
+<fill>
+<Color blue="1.0" green="1.0" red="1.0" />
+</fill>
+<stroke>
+<Color blue="0.0" green="0.0" red="0.0" />
+</stroke>
+</SVGPath>
+<SVGPath content="M945,512.002C945,751.139,751.14,945,512,945S79,751.139,79,512.002   C79,272.859,272.86,79,512,79S945,272.859,945,512.002z" opacity="1" strokeWidth="10.0">
+<fill>
+<Color blue="1.0" green="1.0" red="1.0" />
+</fill>
+<stroke>
+<Color blue="0.0" green="0.0" red="0.0" />
+</stroke>
+</SVGPath>
+</children>
+</Group>
+<Group id="letter" opacity="1.0">
+<children>
+<SVGPath content="M740,822.14h-85.103V377.147l-348.458,453.46H284V202.283h84.68v444.569l348.88-453.46H740V822.14z" opacity="1" />
+</children>
+</Group>
+</children>
+<effect>
+<ColorAdjust brightness="0.9" />
+</effect>
+</Group>
+<ImageView fitHeight="42.0" fitWidth="200.0" layoutX="10.0" layoutY="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+<image>
+<Image url="@noo-coin-logo-88px.png" />
+</image>
+</ImageView><TabPane layoutX="10.0" layoutY="73.0" prefHeight="520.0" prefWidth="727.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="72.0">
+  <tabs>
+    <Tab text="Balance">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+<children><Label layoutX="43.0" layoutY="30.0" text="999999999.999999999 ИOO" textAlignment="CENTER">
+<font>
+<Font name="Trebuchet MS Bold" size="48.0" />
+</font></Label><Button layoutX="105.0" layoutY="365.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="140.0" text="SEND">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font></Button><TextField alignment="CENTER" editable="false" layoutX="439.0" layoutY="331.0" prefHeight="24.0" prefWidth="225.0" text="eFszs8929fjlklawilliy1dvgggg">
+<font>
+<Font size="14.0" />
+</font></TextField>
+<ImageView fitHeight="149.0" fitWidth="149.0" layoutX="469.0" layoutY="165.0">
+<image>
+<Image url="@qrcode-placeholder.png" />
+</image>
+</ImageView><Label layoutX="498.0" layoutY="370.0" text="RECIEVE" textAlignment="CENTER">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font>
+</Label><TextField alignment="CENTER" layoutX="62.0" layoutY="331.0" prefHeight="24.0" prefWidth="225.0" text="eFszs8929fjlklawilliy1dvgggg">
+<font>
+<Font size="14.0" />
+</font>
+</TextField><TextField alignment="CENTER" layoutX="62.0" layoutY="302.0" prefHeight="24.0" prefWidth="183.0" text="999999999.999999999">
+<font>
+<Font size="14.0" />
+</font>
+</TextField><Label layoutX="160.0" layoutY="85.0" style="-fx-text-fill: #00CC33;" text="Recieving 999999999.999999999 ИOO" textAlignment="CENTER">
+<font>
+<Font name="Trebuchet MS" size="24.0" />
+</font>
+</Label><Label layoutX="247.0" layoutY="304.0" text="ИOO" textAlignment="CENTER">
+<font>
+<Font name="Trebuchet MS Bold" size="18.0" />
+</font>
+</Label>
+</children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Transactions">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+<children><TableView tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+  <columns>
+    <TableColumn editable="false" prefWidth="-1.0" text="Date/Time" />
+    <TableColumn editable="false" prefWidth="-1.0" text="Amount" />
+<TableColumn editable="false" prefWidth="-1.0" text="Addresses" />
+<TableColumn editable="false" prefWidth="-1.0" text="Confirmed" />
+  </columns>
+<columnResizePolicy>
+<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+</columnResizePolicy>
+</TableView>
+</children></AnchorPane>
+      </content>
+    </Tab>
+<Tab text="Address Book">
+<content>
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+<children>
+<TableView layoutX="10.0" layoutY="10.0" tableMenuButtonVisible="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<columns>
+<TableColumn editable="false" prefWidth="-1.0" text="Name" />
+<TableColumn editable="false" prefWidth="-1.0" text="Address" />
+</columns>
+<columnResizePolicy>
+<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+</columnResizePolicy>
+</TableView>
+</children></AnchorPane>
+</content>
+</Tab>
+  </tabs>
+</TabPane>
+</children></AnchorPane>
+</content>
+</Tab><Tab text="Market">
+<content>
+<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
+<children><HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<children>
+<VBox HBox.hgrow="ALWAYS">
+<children><Label text="Predictions">
+<font>
+<Font name="Trebuchet MS" size="18.0" />
+</font></Label><ScrollPane fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+<content><VBox>
+<children><Pane style="-fx-background-color: #E0E0E0;">
+<children><LineChart alternativeColumnFillVisible="true" alternativeRowFillVisible="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" layoutX="-11.0" layoutY="28.0" legendVisible="false" prefHeight="150.0" prefWidth="247.0" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
+  <xAxis>
+    <NumberAxis tickLabelsVisible="false" />
+  </xAxis>
+  <yAxis>
+    <NumberAxis tickLabelsVisible="false" />
+  </yAxis>
+</LineChart><Label layoutX="14.0" layoutY="14.0" text="Btc-e BTC/USD">
+<font>
+<Font name="System Bold" size="11.0" />
+</font></Label><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="https://btc-e.com/tapi" />
+</children>
+<padding>
+<Insets bottom="10.0" />
+</padding></Pane>
+<Pane layoutX="10.0" layoutY="10.0">
+<children>
+<ImageView blendMode="SOFT_LIGHT" fitHeight="56.0" fitWidth="200.0" layoutX="17.0" layoutY="14.0">
+<image>
+<Image url="@bter_logo.png" />
+</image>
+</ImageView>
+<Label layoutX="14.0" layoutY="14.0" text="Bter PPC/BTC">
+<font>
+<Font name="System Bold" size="11.0" />
+</font>
+</Label>
+</children>
+<padding>
+<Insets bottom="10.0" />
+</padding>
+</Pane>
+<Pane layoutX="10.0" layoutY="210.0" style="-fx-background-color: #E0E0E0;">
+<children>
+<ImageView blendMode="SOFT_LIGHT">
+<image>
+<Image url="@NASA_logo.jpg" />
+</image>
+</ImageView>
+<Label layoutX="14.0" layoutY="14.0" text="NASA Sunspots">
+<font>
+<Font name="System Bold" size="11.0" />
+</font>
+</Label>
+</children>
+<padding>
+<Insets bottom="10.0" />
+</padding>
+</Pane>
+<Pane layoutX="10.0" layoutY="410.0" prefHeight="200.0">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="24.0" layoutY="24.0" text="Label" />
+</children>
+</Pane>
+<Pane layoutX="10.0" layoutY="610.0" prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="24.0" layoutY="24.0" text="Label" />
+</children>
+</Pane>
+</children></VBox>
+</content></ScrollPane>
+</children>
+</VBox>
+<VBox HBox.hgrow="ALWAYS">
+<children><Label text="Robots">
+<font>
+<Font name="Trebuchet MS" size="18.0" />
+</font>
+</Label><ScrollPane fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+<content><VBox>
+<children>
+<Pane prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="14.0" layoutY="14.0" text="Bookie">
+<font>
+<Font name="System Bold" size="11.0" />
+</font></Label>
+</children>
+</Pane>
+<Pane layoutX="10.0" layoutY="10.0" prefHeight="200.0">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="24.0" layoutY="24.0" text="Label" />
+</children>
+</Pane>
+<Pane layoutX="10.0" layoutY="210.0" prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="24.0" layoutY="24.0" text="Label" />
+</children>
+</Pane>
+<Pane layoutX="10.0" layoutY="410.0" prefHeight="200.0">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="24.0" layoutY="24.0" text="Label" />
+</children>
+</Pane>
+<Pane layoutX="10.0" layoutY="610.0" prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="24.0" layoutY="24.0" text="Label" />
+</children>
+</Pane>
+</children>
+</VBox>
+</content></ScrollPane>
+</children>
+</VBox>
+<VBox HBox.hgrow="ALWAYS">
+<children><Label text="Miners">
+<font>
+<Font name="Trebuchet MS" size="18.0" />
+</font>
+</Label><ScrollPane fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+<content><VBox>
+<children>
+<Pane prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="14.0" layoutY="14.0" text="Grokker">
+<font>
+<Font name="System Bold" size="11.0" />
+</font></Label>
+</children>
+</Pane>
+<Pane layoutX="10.0" layoutY="10.0" prefHeight="200.0">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="24.0" layoutY="24.0" text="Label" />
+</children>
+</Pane>
+<Pane layoutX="10.0" layoutY="210.0" prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="24.0" layoutY="24.0" text="Label" />
+</children>
+</Pane>
+<Pane layoutX="10.0" layoutY="410.0" prefHeight="200.0">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="24.0" layoutY="24.0" text="Label" />
+</children>
+</Pane>
+<Pane layoutX="10.0" layoutY="610.0" prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
+<children>
+<ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+<Label layoutX="24.0" layoutY="24.0" text="Label" />
+</children>
+</Pane>
+</children>
+</VBox>
+</content></ScrollPane>
+</children>
+</VBox>
+</children></HBox>
+</children></AnchorPane>
+</content>
+</Tab>
+<Tab text="Robot">
+<content>
+<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
+<children><Label focusTraversable="false" text="Bookie" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font>
+</Label><Label focusTraversable="false" layoutX="66.0" layoutY="56.0" text="Btc-e">
+<font>
+<Font name="Trebuchet MS" size="18.0" />
+</font>
+</Label><PasswordField layoutX="130.0" layoutY="57.0" prefHeight="20.0" prefWidth="290.0" promptText="API Key" /><PasswordField layoutX="130.0" layoutY="85.0" prefHeight="20.0" prefWidth="290.0" promptText="API Secret" /><PasswordField layoutX="130.0" layoutY="160.0" prefHeight="20.0" prefWidth="290.0" promptText="API Secret" /><PasswordField layoutX="130.0" layoutY="132.0" prefHeight="20.0" prefWidth="290.0" promptText="API Key" /><Label focusTraversable="false" layoutX="66.0" layoutY="131.0" text="Bter">
+<font>
+<Font name="Trebuchet MS" size="18.0" />
+</font>
+</Label>
+</children></AnchorPane>
+</content>
+</Tab>
+        <Tab text="Miner">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-              <children>
-                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-35.0" layoutY="-58.0" legendSide="TOP" prefHeight="382.0" prefWidth="744.0" title="Prediction" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <children><VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<children>
+                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-14.0" layoutY="-19.0" legendSide="TOP" title="Prediction" AnchorPane.bottomAnchor="218.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
                   <xAxis>
                     <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickLabelsVisible="true" tickMarkVisible="true" upperBound="12.0" />
                   </xAxis>
@@ -26,67 +393,87 @@
                     <NumberAxis animated="false" side="LEFT" />
                   </yAxis>
                 </LineChart>
-				<LineChart fx:id="chartTrading" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutY="382.0" legendSide="TOP" prefHeight="168.0" prefWidth="744.0" title="Trading" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+				<LineChart fx:id="chartTrading" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutY="382.0" legendSide="TOP" prefHeight="168.0" title="Trading" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 				  <xAxis>
 				    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickMarkVisible="true" upperBound="12.0" />
 				  </xAxis>
 				  <yAxis>
 				    <NumberAxis animated="false" side="LEFT" />
 				  </yAxis>
+<VBox.margin>
+<Insets top="-6.0" />
+</VBox.margin>
 				</LineChart>
-                <ProgressBar fx:id="predictProgress" layoutX="36.0" layoutY="550.0" prefWidth="666.0" progress="0.0" />
-                <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonRunAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #00a3ff;" text="Run" textAlignment="CENTER" textOverrun="CLIP" underline="false">
+<HBox>
+<children><Pane HBox.hgrow="ALWAYS" />
+                <ProgressBar fx:id="predictProgress" focusTraversable="false" layoutX="36.0" layoutY="550.0" prefWidth="666.0" progress="0.0" AnchorPane.bottomAnchor="40.0" /><Pane HBox.hgrow="ALWAYS" />
+</children>
+<padding>
+<Insets top="-6.0" />
+</padding>
+</HBox>
+<HBox>
+<children><Pane HBox.hgrow="ALWAYS" />
+                <Button fx:id="buttonClear" alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonClearAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #00a3ff;" text="Stop" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
                   <font>
                     <Font name="Trebuchet MS" size="22.0" />
                   </font>
                   <textFill>
                     <Color blue="0.161" green="0.161" red="0.161" />
                   </textFill>
-                </Button>
-                <Button fx:id="buttonClear" alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonClearAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #00a3ff;" text="Stop" textAlignment="CENTER" textOverrun="CLIP" underline="false">
+                </Button><Pane HBox.hgrow="ALWAYS" />
+                <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonRunAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #00a3ff;" text="Run" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
                   <font>
                     <Font name="Trebuchet MS" size="22.0" />
                   </font>
                   <textFill>
                     <Color blue="0.161" green="0.161" red="0.161" />
                   </textFill>
-                </Button>
+                </Button><Pane HBox.hgrow="ALWAYS" />
+</children>
+<padding>
+<Insets top="10.0" />
+</padding>
+</HBox>
+</children></VBox><Label focusTraversable="false" text="Grokker" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font></Label>
               </children>
             </AnchorPane>
           </content>
         </Tab>
-<Tab text="Bookie">
-<content>
-<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0" />
-</content>
-</Tab>
-<Tab text="Wallet">
-<content>
-<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
-<children>
-<ImageView fitHeight="42.0" fitWidth="200.0" layoutX="10.0" layoutY="10.0">
-<image>
-<Image url="@noo-coin-logo-88px.png" />
-</image>
-</ImageView>
-</children></AnchorPane>
-</content>
-</Tab>
         <Tab text="Log">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
               <children>
-                <TextArea fx:id="outBox" editable="false" focusTraversable="false" layoutX="14.0" layoutY="11.0" prefHeight="575.0" prefWidth="716.0" promptText="console output" style="-fx-font-family: &quot;Courier New&quot;;" text="" wrapText="true" />
+                <TextArea fx:id="outBox" editable="false" focusTraversable="false" layoutX="10.0" layoutY="10.0" promptText="console output" style="-fx-font-family: &quot;Courier New&quot;;" text="" wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
               </children>
             </AnchorPane>
           </content>
-        </Tab>
+        </Tab><Tab text="Test2" />
+<Tab text="Test1">
+<content>
+<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
+<children><TitledPane animated="false" layoutX="7.0" layoutY="28.0" prefHeight="395.0" prefWidth="206.0" text="Predictions">
+<content><VBox prefHeight="200.0" prefWidth="100.0">
+<children><Pane prefHeight="200.0">
+<children><Label layoutX="91.6845703125" layoutY="104.0" text="Label" />
+</children></Pane><Pane prefHeight="200.0">
+<children><Label layoutX="65.6845703125" layoutY="81.0" text="Label" />
+</children></Pane>
+</children></VBox>
+</content>
+</TitledPane><Button layoutX="310.959228515625" layoutY="515.0" mnemonicParsing="false" text="Button" />
+</children></AnchorPane>
+</content>
+</Tab>
       </tabs>
     </TabPane>
-    <Button fx:id="closeButton" layoutX="838.0" mnemonicParsing="false" onAction="#onCloseButtonAction" prefHeight="32.0" prefWidth="32.0" text="" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-    <Line disable="true" endX="-88.0" endY="14.0" startX="-100.0" stroke="WHITE" strokeWidth="2.2" AnchorPane.rightAnchor="8.44" AnchorPane.topAnchor="7.44" />
-    <Line disable="true" endX="-88.0" endY="14.0" layoutX="907.0" layoutY="9.0" rotate="90.0" startX="-100.0" stroke="WHITE" strokeWidth="2.2" AnchorPane.rightAnchor="8.44" AnchorPane.topAnchor="7.44" />
-<ImageView layoutX="768.0" layoutY="528.0" preserveRatio="true">
+    <Button fx:id="closeButton" layoutX="838.0" mnemonicParsing="false" onAction="#onCloseButtonAction" prefHeight="32.0" prefWidth="32.0" text="" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+    <Line disable="true" endX="-88.0" endY="14.0" startX="-100.0" stroke="WHITE" strokeWidth="2.2" visible="false" AnchorPane.rightAnchor="8.44" AnchorPane.topAnchor="7.44" />
+    <Line disable="true" endX="-88.0" endY="14.0" layoutX="907.0" layoutY="9.0" rotate="90.0" startX="-100.0" stroke="WHITE" strokeWidth="2.2" visible="false" AnchorPane.rightAnchor="8.44" AnchorPane.topAnchor="7.44" />
+<ImageView layoutX="768.0" layoutY="528.0" preserveRatio="true" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="0.0">
 <image>
 <Image url="@noo-logo-up-32px.png" />
 </image>

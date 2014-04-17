@@ -119,10 +119,10 @@ public class FXMLController implements Initializable {
 						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), 0.0d, 0.0d);
 
 						//****action training
-//						actor.train();
-//						point.setData(2, actor.balBTC); //add ongoing balances so that we can move our training window
-//						point.setData(3, actor.balUSD);
-//						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), actor.tradeBTC*0.05d+50d, Math.tanh(actor.balUSD/exptTotalUSD*Math.PI)*100d);
+						actor.train();
+						point.setData(2, actor.balBTC); //add ongoing balances so that we can move our training window
+						point.setData(3, actor.balUSD);
+						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), actor.tradeBTC*0.05d+50d, Math.tanh(actor.balUSD/exptTotalUSD*Math.PI)*100d);
 
 
 						//****this is where we would actually execute our trade using actor.buysellBTC and actor.tradeBTC

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2014 BownCo
+ * Copyright Â© 2014 BownCo
  * All rights reserved.
  */
 
@@ -21,23 +21,40 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Noo");
-		stage.initStyle(StageStyle.UNDECORATED);
+		stage.initStyle(StageStyle.UNIFIED);
+		//stage.initStyle(StageStyle.UNDECORATED);
+		//stage.setOpacity(0.2);
+        //stage.setResizable(true); //doesn't work with StageStyle.UNDECORATED
         stage.centerOnScreen();
+		//stage.setFullScreen(true);
 		
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+        //Parent root = new Parent() {};
+        //root.setDepthTest(DepthTest.ENABLE); //3D
 		
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/Styles.css");
+        //scene.setCamera(new PerspectiveCamera()); //3D
         stage.setScene(scene);
-		stage.setOnShown(new EventHandler<WindowEvent>() {
-			@Override public void handle(WindowEvent e) { onShown(e); }
-		});
+//		stage.setOnShown(new EventHandler<WindowEvent>() {
+//			@Override public void handle(WindowEvent e) { onShown(e); }
+//		});
         stage.show();
-    }
-	public void onShown(WindowEvent e) {
-		System.out.println("onShown");
 		
-	}
+//		root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+//		scene.setRoot(root);
+		
+//		//these only have values here
+//		double stageH = stage.getHeight();
+//		double stageW = stage.getWidth();
+//		double rootH = root.getLayoutBounds().getHeight();
+//		double rootW = root.getLayoutBounds().getWidth();
+//		double sceneH = scene.getHeight();
+//		double sceneW = scene.getWidth();
+    }
+//	public void onShown(WindowEvent e) {
+//		System.out.println("onShown");
+//	}
 
     /**
      * The main() method is ignored in correctly deployed JavaFX application.

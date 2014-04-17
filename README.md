@@ -1,2 +1,2 @@
-trader
+Noo Core
 ======

@@ -86,7 +86,6 @@
      * TODO: should this be derived from -fx-accent?
      */
     -fx-focus-color: #0093ff;
-
     /* The color that is used in styling controls. The default value is based
      * on -fx-base, but is changed by pseudoclasses to change the base color.
      * For example, the "hover" pseudoclass will typically set -fx-color to
@@ -138,6 +137,13 @@
         -fx-dark-text-color  59%,
         -fx-mid-text-color   60%
      );
+/*    -fx-text-background-color: ladder(
+        -fx-background,
+        -fx-mid-text-color   45%,
+        -fx-dark-text-color  46%,
+        -fx-dark-text-color  59%,
+        -fx-light-text-color 60%
+     );*/
 
     /* The default color for all text.  Sections should change the -fx-text-fill
      * property if change the background color to something else.  See also:
@@ -250,6 +256,13 @@
     /* The color to use as -fx-text-fill when painting text on top of
      * backgrounds filled with -fx-base, -fx-color, and -fx-body-color.
      */
+    /*-fx-text-base-color: ladder(
+        -fx-color,
+        -fx-light-text-color 45%,
+        -fx-dark-text-color  46%,
+        -fx-dark-text-color  59%,
+        -fx-mid-text-color   60%
+    );*/
     -fx-text-base-color: ladder(
         -fx-color,
         -fx-light-text-color 45%,
@@ -261,6 +274,13 @@
     /* The color to use as -fx-text-fill when painting text on top of
      * backgrounds filled with -fx-control-inner-background.
      */
+    /*-fx-text-inner-color: ladder(
+        -fx-control-inner-background,
+        -fx-light-text-color 45%,
+        -fx-dark-text-color  46%,
+        -fx-dark-text-color  59%,
+        -fx-mid-text-color   60%
+    );*/
     -fx-text-inner-color: ladder(
         -fx-control-inner-background,
         -fx-light-text-color 45%,
@@ -307,8 +327,8 @@
      */
     -fx-selection-bar-text: ladder(
         -fx-background,
-        -fx-light-text-color 50%,
-        -fx-mid-text-color   51%
+        -fx-dark-text-color   50%,
+        -fx-light-text-color 51%
     );
 
     /* The default border color for a tab.
@@ -2302,6 +2322,10 @@
     -fx-padding: 0;
 }
 
+.table-view .column-header .label {
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
 /* The column header row is made up of a number of column-header, one for each
    TableColumn, and a 'filler' area that extends from the right-most column
    to the edge of the tableview, or up to the 'column control' button. */
@@ -2652,13 +2676,13 @@
 /*}*/
 
 .tab-pane:top *.tab-header-area {
-    -fx-background-insets: 0, 0 0 1 0;
-    -fx-padding: 0.416667em 0.166667em 0.0em 0.833em; /* 5 2 0 10 */
+    -fx-background-insets: 0, 0 0 0 0;
+    -fx-padding: 0 0 0 0; /* 5 2 0 10 */
 }
 
 .tab-pane:bottom *.tab-header-area {
-    -fx-background-insets: 0, 1 0 0 0;
-    -fx-padding: 0 0.166667em 0.416667em 0.833em; /* 0 2 5 0 */
+    -fx-background-insets: 0, 0 0 0 0;
+    -fx-padding: 0 0 0 0; /* 0 2 5 0 */
 }
 
 .tab-pane:left *.tab-header-area {
@@ -2667,8 +2691,8 @@
 }
 
 .tab-pane:right *.tab-header-area {
-    -fx-background-insets: 0, 0 0 0 1;
-    -fx-padding: 0.833em 0.416667em 0.166667em 0.0em; /* 10 5 2 0 */
+    -fx-background-insets: 0, 0 0 0 0;
+    -fx-padding: 0 0 0 0; /* 10 5 2 0 */
 }
 
 .tab-pane .headers-region {
