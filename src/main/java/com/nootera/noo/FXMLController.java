@@ -8,9 +8,14 @@ package com.nootera.noo;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,8 +23,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import org.btc4j.core.BtcException;
+import org.btc4j.core.BtcInfo;
+import org.btc4j.daemon.BtcDaemon;
 import org.encog.Encog;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;
@@ -31,6 +42,8 @@ import org.encog.util.arrayutil.NormalizationAction;
 import org.encog.util.arrayutil.NormalizedField;
 
 public class FXMLController implements Initializable {
+	public static FXMLController instance;
+	public FXMLController() { instance = this; }
 	
 	private static final int tickVisWindow = 90;
 	
@@ -77,9 +90,9 @@ public class FXMLController implements Initializable {
 	public static final NormalizedField trade = new NormalizedField(NormalizationAction.Normalize, "trade", 100.0d, -100.0d, 1.0d, -1.0d); //max BTC trade size
 	public static final double fee = 0.99d; //fee per trade
 	public static final double exptTotalBTC = 100.0d;
-	public static final double exptTotalUSD = 10000.0d;
+	public static final double exptTotalUSD = 1000.0d;
 	
-	public static RunThread runThread;
+	public RunThread runThread;
 	public class RunThread extends Thread {
 		public Boolean stop = false;
 		@Override
@@ -116,13 +129,14 @@ public class FXMLController implements Initializable {
 						final BasicMLData inputP = dataSet.generateInputNeuralData(newidx - INPUT_WINDOW_SIZE + 1); //it subtracts one from index anyway
 						double[] predictions = predictor.predict(inputP);
 						for (int i=0; i < predictions.length; i++) point.setData(descPredStart+i, predictions[i]); //add prediction data share output
-						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), 0.0d, 0.0d);
+						//chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), 0.0d, 0.0d); //comment out when doing both prediction and trading
 
 						//****action training
 						actor.train();
 						point.setData(2, actor.balBTC); //add ongoing balances so that we can move our training window
 						point.setData(3, actor.balUSD);
-						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), actor.tradeBTC*0.05d+50d, Math.tanh(actor.balUSD/exptTotalUSD*Math.PI)*100d);
+						//chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), actor.tradeBTC*0.05d+50d, Math.tanh(actor.balUSD/exptTotalUSD*Math.PI)*100d);
+						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), actor.tradeBTC*0.5d+50d, Math.tanh(actor.balUSD/exptTotalUSD*Math.PI)*100d);
 
 
 						//****this is where we would actually execute our trade using actor.buysellBTC and actor.tradeBTC
@@ -141,13 +155,14 @@ public class FXMLController implements Initializable {
 	}
 	
 	
-	//************
-    
+	//************ Miner
     @FXML
     public TextArea outBox;
 	public LineChart chartPrediction;
 	public LineChart chartTrading;
 	public ProgressBar predictProgress;
+	private Button buttonClear;
+	private Button buttonRun;
 	
     @FXML
     private void onButtonRunAction(ActionEvent event) {
@@ -163,16 +178,6 @@ public class FXMLController implements Initializable {
 			runThread.stop = true;
 			//runThread.interrupt();
 		}
-    }
-	
-    @FXML
-    private void onCloseButtonAction(ActionEvent event) {
-		if (runThread != null) {
-			runThread.stop = true;
-			runThread.interrupt();
-		}
-		Encog.getInstance().shutdown();
-		Platform.exit();
     }
 	
 	public static void updateProgress(final ProgressBar bar, final double value) {
@@ -195,19 +200,19 @@ public class FXMLController implements Initializable {
 	}
 	
 	public static int chartx = 1;
-	public static void chartAdd(final LineChart chart1, final LineChart chart2, final double value0, final double value1, final double value2, final double value3) {
+	public static void chartAdd(final LineChart chart1, final LineChart chart2, final double actual, final double prediction, final double trade, final double bal) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				XYChart.Series series0 = (XYChart.Series)chart1.getData().get(0);
-				series0.getData().add(new XYChart.Data(chartx, value0));
+				series0.getData().add(new XYChart.Data(chartx, actual));
 				XYChart.Series series1 = (XYChart.Series)chart1.getData().get(1);
-				series1.getData().add(new XYChart.Data(chartx, value1));
+				series1.getData().add(new XYChart.Data(chartx, prediction));
 				
 				XYChart.Series series2 = (XYChart.Series)chart2.getData().get(0);
-				series2.getData().add(new XYChart.Data(chartx, value2));
+				series2.getData().add(new XYChart.Data(chartx, trade));
 				XYChart.Series series3 = (XYChart.Series)chart2.getData().get(1);
-				series3.getData().add(new XYChart.Data(chartx, value3));
+				series3.getData().add(new XYChart.Data(chartx, bal));
 				
 				chartx++;
 				
@@ -231,9 +236,98 @@ public class FXMLController implements Initializable {
 		});
 	}
 	
+	
+	//************ Wallet
+	public BtcDaemon noocoind;
+	
+    @FXML
+	public TextField walletReceiveAddress;
+	public Label walletSpendableBalance;
+	public Label wallet0ConfirmBalance;
+	public TextField walletSendAddress;
+	public TextField walletSendAmount;
+	private Button walletButtonSend;
+	
+    @FXML
+    private void onWalletButtonSend(ActionEvent event) {
+		
+    }
+	
+	
+	//************ test1
+    @FXML
+	public TextArea testTextArea;
+	
+    @FXML
+    private void onButtonTestAction(ActionEvent event) {
+		try {
+//			BtcInfo info = noocoind.getInformation();
+//			testTextArea.appendText(info.getBalance().toString()+"\r\n");
+			
+			String address = noocoind.getAccountAddress("");
+			testTextArea.appendText(address+"\r\n");
+			
+//			BigDecimal balance = noocoind.getBalance(1);
+//			testTextArea.appendText(balance.toString()+"\r\n");
+			
+			//daemon.walletPassphrase("GBxDyFeDMYEHucz6XFRpXDDB2woCU4wi96KD9widEmsj");
+			//daemon.sendToAddress("mm48fadf1wJVF341ArWmtwZZGV8s34UGWD", BigDecimal.valueOf(0.72));
+			//daemon.walletLock();
+		} catch (BtcException ex) {
+			System.out.println(ex.getMessage());
+		}
+    }
+	
+	
+	//*******************
+	@FXML
+	private Button closeButton;
+	
+    @FXML
+    public void onCloseButtonAction(ActionEvent event) {
+		close();
+		Platform.exit();
+    }
+	
+	
+	//*******************
+	
+    public void close() {
+		if (runThread != null) {
+			runThread.stop = true;
+			runThread.interrupt();
+		}
+		Encog.getInstance().shutdown();
+		
+		//noocoind.stop(); // will stop bitcoind, not required
+    }
+	
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 		redirectSystemStreams(outBox);
+		
+		try {
+			//Wallet
+			//Map<String,String> env = System.getenv();
+			//ProcessBuilder builder = new ProcessBuilder("noocoind.exe","-gen=1","-connect=98.202.20.45","-rpcuser=noocoinrpc","-rpcpassword=sskvik3290f87uvkk2sovllshj390gf876fdSGkza1");
+			//Process process = builder.start();
+			
+			noocoind = new BtcDaemon(new URL("http://127.0.0.1:41801"), "noocoinrpc", "sskvik3290f87uvkk2sovllshj390gf876fdSGkza1");
+			
+			String address = noocoind.getAccountAddress("");
+			walletReceiveAddress.setText(address);
+
+			BigDecimal balance = noocoind.getBalance(1);
+			walletSpendableBalance.setText(balance.toString());
+				
+			
+		} catch (BtcException ex) {
+			System.out.println(ex.getMessage());
+		} catch (MalformedURLException ex) {
+			System.out.println(ex.getMessage());
+		} catch (IOException ex) {
+			System.out.println(ex.getMessage());
+		}
 		
 		//Prediction Chart
 		NumberAxis xaxis1 = (NumberAxis)chartPrediction.getXAxis();

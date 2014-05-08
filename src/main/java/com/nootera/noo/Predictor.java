@@ -91,7 +91,7 @@ public class Predictor {
 	public void train() {
 		epoch = 0;
 		for (int i = 0; i < FXMLController.predictTrainEpochs; i++) {
-			if (FXMLController.runThread == null || FXMLController.runThread.stop) break;
+			if (FXMLController.instance == null || FXMLController.instance.runThread == null || FXMLController.instance.runThread.stop) break;
 			train.iteration();
 			//double error = train.getError();
 			double error = network.calculateError(FXMLController.dataSet);

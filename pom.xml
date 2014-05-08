@@ -83,6 +83,15 @@
                     </compilerArguments>
                 </configuration>
             </plugin>
+			
+			<plugin>
+				<groupId>com.zenjava</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+				<version>2.0</version>
+				<configuration>
+					<mainClass>com.nootera.noo.MainApp</mainClass>
+				</configuration>
+			</plugin>
 <!--                        
             <plugin>
                 <groupId>com.github.wvengen</groupId>
@@ -141,6 +150,11 @@
             <groupId>com.xeiam.xchange</groupId>
             <artifactId>xchange-bter</artifactId>
             <version>2.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.btc4j</groupId>
+            <artifactId>btc4j-daemon</artifactId>
+            <version>0.0.3</version>
         </dependency>
     </dependencies>
     <description>Copyright 2014 BownCo

@@ -68,7 +68,7 @@ public class Actor {
 	public void train() {
 		epoch = 0;
 		for (int i = 0; i < FXMLController.ActTrainEpochs; i++) {
-			if (FXMLController.runThread == null || FXMLController.runThread.stop) break;
+			if (FXMLController.instance == null || FXMLController.instance.runThread == null || FXMLController.instance.runThread.stop) break;
 			train.iteration(); //uses multiple threads
 			System.out.println(String.format("Actor Epoch[%5d] Score[%15.4f]", epoch, train.getError()));
 			epoch++;
@@ -76,7 +76,7 @@ public class Actor {
 		}
 		train.finishTraining();
 		
-		if (FXMLController.runThread == null || FXMLController.runThread.stop) return;
+		if (FXMLController.instance == null || FXMLController.instance.runThread == null || FXMLController.instance.runThread.stop) return;
 		MLMethod method = train.getMethod(); //winning network
 		ActorNetwork pilot = new ActorNetwork(method, this, false); //change to true to show how winning network traded
 		pilot.scoreActor();

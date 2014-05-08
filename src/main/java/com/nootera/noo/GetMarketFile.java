@@ -6,6 +6,7 @@
 package com.nootera.noo;
 
 import java.io.File;
+import javafx.application.Application;
 import org.encog.ml.data.temporal.TemporalMLDataSet;
 import org.encog.ml.data.temporal.TemporalPoint;
 import org.encog.util.csv.ReadCSV;
@@ -17,7 +18,7 @@ public class GetMarketFile {
 	
 	public GetMarketFile() {
 		sequenceNumber = 1;
-		history = new File(".", "btceUSD.csv");
+		history = new File(".", "btceUSD_small.csv");
 		csv = new ReadCSV(history.toString(), false, ',');
 	}
 	
@@ -28,7 +29,7 @@ public class GetMarketFile {
 		int cnt = 0;
 		int last_timestamp = 0;
 		while (csv.next()) {
-			if (FXMLController.runThread == null || FXMLController.runThread.stop) break;
+			if (FXMLController.instance == null || FXMLController.instance.runThread == null || FXMLController.instance.runThread.stop) break;
 			int timestamp = csv.getInt(0);
 			//if (timestamp >= 1366487996) return false;
 			if (cnt == 0) last_timestamp = timestamp;

@@ -113,17 +113,17 @@
     <Tab text="Balance">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-<children><Label layoutX="43.0" layoutY="30.0" text="999999999.999999999 ИOO" textAlignment="CENTER">
+<children><Label fx:id="walletSpendableBalance" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="43.0" layoutY="30.0" prefWidth="530.0" text="99999999.99999999" textAlignment="RIGHT" textOverrun="CLIP">
 <font>
 <Font name="Trebuchet MS Bold" size="48.0" />
-</font></Label><Button layoutX="105.0" layoutY="365.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="140.0" text="SEND">
+</font></Label><Button fx:id="walletButtonSend" layoutX="105.0" layoutY="365.0" mnemonicParsing="false" onAction="#onWalletButtonSend" prefHeight="39.0" prefWidth="140.0" text="SEND">
 <font>
 <Font name="Trebuchet MS Bold" size="24.0" />
-</font></Button><TextField alignment="CENTER" editable="false" layoutX="439.0" layoutY="331.0" prefHeight="24.0" prefWidth="225.0" text="eFszs8929fjlklawilliy1dvgggg">
+</font></Button><TextField fx:id="walletReceiveAddress" alignment="CENTER" editable="false" layoutX="402.0" layoutY="331.0" prefHeight="24.0" prefWidth="280.0">
 <font>
 <Font size="14.0" />
 </font></TextField>
-<ImageView fitHeight="149.0" fitWidth="149.0" layoutX="469.0" layoutY="165.0">
+<ImageView fitHeight="149.0" fitWidth="149.0" layoutX="470.0" layoutY="165.0">
 <image>
 <Image url="@qrcode-placeholder.png" />
 </image>
@@ -131,21 +131,25 @@
 <font>
 <Font name="Trebuchet MS Bold" size="24.0" />
 </font>
-</Label><TextField alignment="CENTER" layoutX="62.0" layoutY="331.0" prefHeight="24.0" prefWidth="225.0" text="eFszs8929fjlklawilliy1dvgggg">
+</Label><TextField fx:id="walletSendAddress" alignment="CENTER" layoutX="35.0" layoutY="331.0" prefHeight="24.0" prefWidth="280.0" promptText="Recipient Address">
 <font>
 <Font size="14.0" />
 </font>
-</TextField><TextField alignment="CENTER" layoutX="62.0" layoutY="302.0" prefHeight="24.0" prefWidth="183.0" text="999999999.999999999">
+</TextField><TextField fx:id="walletSendAmount" alignment="CENTER" layoutX="68.0" layoutY="302.0" prefHeight="24.0" prefWidth="183.0" text="999999999.999999999">
 <font>
 <Font size="14.0" />
 </font>
-</TextField><Label layoutX="160.0" layoutY="85.0" style="-fx-text-fill: #00CC33;" text="Recieving 999999999.999999999 ИOO" textAlignment="CENTER">
+</TextField><Label fx:id="wallet0ConfirmBalance" layoutX="160.0" layoutY="85.0" style="-fx-text-fill: #00CC33;" text="Recieving 999999999.999999999 ИOO" textAlignment="CENTER">
 <font>
 <Font name="Trebuchet MS" size="24.0" />
 </font>
-</Label><Label layoutX="247.0" layoutY="304.0" text="ИOO" textAlignment="CENTER">
+</Label><Label layoutX="253.0" layoutY="304.0" text="ИOO" textAlignment="CENTER">
 <font>
 <Font name="Trebuchet MS Bold" size="18.0" />
+</font>
+</Label><Label layoutX="586.0" layoutY="30.0" text="ИOO" textAlignment="CENTER">
+<font>
+<Font name="Trebuchet MS Bold" size="48.0" />
 </font>
 </Label>
 </children></AnchorPane>
@@ -161,9 +165,6 @@
 <TableColumn editable="false" prefWidth="-1.0" text="Addresses" />
 <TableColumn editable="false" prefWidth="-1.0" text="Confirmed" />
   </columns>
-<columnResizePolicy>
-<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-</columnResizePolicy>
 </TableView>
 </children></AnchorPane>
       </content>
@@ -177,9 +178,6 @@
 <TableColumn editable="false" prefWidth="-1.0" text="Name" />
 <TableColumn editable="false" prefWidth="-1.0" text="Address" />
 </columns>
-<columnResizePolicy>
-<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-</columnResizePolicy>
 </TableView>
 </children></AnchorPane>
 </content>
@@ -279,13 +277,13 @@
 <Label layoutX="14.0" layoutY="14.0" text="Bookie">
 <font>
 <Font name="System Bold" size="11.0" />
-</font></Label>
+</font></Label><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="25 NOO / month" />
 </children>
 </Pane>
 <Pane layoutX="10.0" layoutY="10.0" prefHeight="200.0">
 <children>
 <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-<Label layoutX="24.0" layoutY="24.0" text="Label" />
+<Label layoutX="24.0" layoutY="24.0" text="Weather" />
 </children>
 </Pane>
 <Pane layoutX="10.0" layoutY="210.0" prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
@@ -325,13 +323,13 @@
 <Label layoutX="14.0" layoutY="14.0" text="Grokker">
 <font>
 <Font name="System Bold" size="11.0" />
-</font></Label>
+</font></Label><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="FREE" />
 </children>
 </Pane>
 <Pane layoutX="10.0" layoutY="10.0" prefHeight="200.0">
 <children>
 <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-<Label layoutX="24.0" layoutY="24.0" text="Label" />
+<Label layoutX="24.0" layoutY="24.0" text="Miner C" /><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="0.05 NOO per Tick" />
 </children>
 </Pane>
 <Pane layoutX="10.0" layoutY="210.0" prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
@@ -361,31 +359,12 @@
 </children></AnchorPane>
 </content>
 </Tab>
-<Tab text="Robot">
-<content>
-<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
-<children><Label focusTraversable="false" text="Bookie" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
-<font>
-<Font name="Trebuchet MS Bold" size="24.0" />
-</font>
-</Label><Label focusTraversable="false" layoutX="66.0" layoutY="56.0" text="Btc-e">
-<font>
-<Font name="Trebuchet MS" size="18.0" />
-</font>
-</Label><PasswordField layoutX="130.0" layoutY="57.0" prefHeight="20.0" prefWidth="290.0" promptText="API Key" /><PasswordField layoutX="130.0" layoutY="85.0" prefHeight="20.0" prefWidth="290.0" promptText="API Secret" /><PasswordField layoutX="130.0" layoutY="160.0" prefHeight="20.0" prefWidth="290.0" promptText="API Secret" /><PasswordField layoutX="130.0" layoutY="132.0" prefHeight="20.0" prefWidth="290.0" promptText="API Key" /><Label focusTraversable="false" layoutX="66.0" layoutY="131.0" text="Bter">
-<font>
-<Font name="Trebuchet MS" size="18.0" />
-</font>
-</Label>
-</children></AnchorPane>
-</content>
-</Tab>
         <Tab text="Miner">
           <content>
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children><VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 <children>
-                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-14.0" layoutY="-19.0" legendSide="TOP" title="Prediction" AnchorPane.bottomAnchor="218.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
+                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-14.0" layoutY="-19.0" legendSide="TOP" title="Prediction | Btc-e BTC/USD" AnchorPane.bottomAnchor="218.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
                   <xAxis>
                     <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickLabelsVisible="true" tickMarkVisible="true" upperBound="12.0" />
                   </xAxis>
@@ -393,7 +372,7 @@
                     <NumberAxis animated="false" side="LEFT" />
                   </yAxis>
                 </LineChart>
-				<LineChart fx:id="chartTrading" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutY="382.0" legendSide="TOP" prefHeight="168.0" title="Trading" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+				<LineChart fx:id="chartTrading" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutY="382.0" legendSide="TOP" prefHeight="168.0" title="Trading | BTC/USD" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 				  <xAxis>
 				    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickMarkVisible="true" upperBound="12.0" />
 				  </xAxis>
@@ -414,7 +393,7 @@
 </HBox>
 <HBox>
 <children><Pane HBox.hgrow="ALWAYS" />
-                <Button fx:id="buttonClear" alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonClearAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #00a3ff;" text="Stop" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
+                <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonRunAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #2a9085;" text="Start" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
                   <font>
                     <Font name="Trebuchet MS" size="22.0" />
                   </font>
@@ -422,7 +401,7 @@
                     <Color blue="0.161" green="0.161" red="0.161" />
                   </textFill>
                 </Button><Pane HBox.hgrow="ALWAYS" />
-                <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonRunAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #00a3ff;" text="Run" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
+                <Button fx:id="buttonClear" alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonClearAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #902a5a;" text="Stop" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
                   <font>
                     <Font name="Trebuchet MS" size="22.0" />
                   </font>
@@ -443,15 +422,56 @@
             </AnchorPane>
           </content>
         </Tab>
-        <Tab text="Log">
-          <content>
-            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
-              <children>
-                <TextArea fx:id="outBox" editable="false" focusTraversable="false" layoutX="10.0" layoutY="10.0" promptText="console output" style="-fx-font-family: &quot;Courier New&quot;;" text="" wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-              </children>
-            </AnchorPane>
-          </content>
-        </Tab><Tab text="Test2" />
+<Tab text="Robot">
+<content>
+<AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
+<children><Label focusTraversable="false" text="Bookie" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font>
+</Label><Label focusTraversable="false" layoutX="66.0" layoutY="56.0" text="Btc-e">
+<font>
+<Font name="Trebuchet MS" size="18.0" />
+</font>
+</Label><TextField layoutX="130.0" layoutY="57.0" prefHeight="20.0" prefWidth="290.0" promptText="API Key" /><TextField layoutX="130.0" layoutY="85.0" prefHeight="20.0" prefWidth="290.0" promptText="API Secret" /><LineChart alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutY="353.0" legendSide="TOP" prefHeight="168.0" title="Trading BTC/USD" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+<xAxis>
+<NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickMarkVisible="true" upperBound="12.0" />
+</xAxis>
+<yAxis>
+<NumberAxis animated="false" side="LEFT" />
+</yAxis>
+</LineChart><HBox layoutY="520.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+<children>
+<Pane HBox.hgrow="ALWAYS" />
+<ProgressBar focusTraversable="false" layoutX="36.0" layoutY="550.0" prefWidth="666.0" progress="0.0" AnchorPane.bottomAnchor="40.0" />
+<Pane HBox.hgrow="ALWAYS" />
+</children>
+</HBox><HBox layoutY="544.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+<children>
+<Pane HBox.hgrow="ALWAYS" />
+<Button alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #2a9085;" text="Start" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
+<font>
+<Font name="Trebuchet MS" size="22.0" />
+</font>
+<textFill>
+<Color blue="0.161" green="0.161" red="0.161" />
+</textFill>
+</Button>
+<Pane HBox.hgrow="ALWAYS" />
+<Button alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #902a5a;" text="Stop" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
+<font>
+<Font name="Trebuchet MS" size="22.0" />
+</font>
+<textFill>
+<Color blue="0.161" green="0.161" red="0.161" />
+</textFill>
+</Button>
+<Pane HBox.hgrow="ALWAYS" />
+</children>
+</HBox>
+</children></AnchorPane>
+</content>
+</Tab>
 <Tab text="Test1">
 <content>
 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
@@ -464,10 +484,19 @@
 </children></Pane>
 </children></VBox>
 </content>
-</TitledPane><Button layoutX="310.959228515625" layoutY="515.0" mnemonicParsing="false" text="Button" />
+</TitledPane><Button fx:id="buttonTest" layoutX="310.959228515625" layoutY="515.0" mnemonicParsing="false" onAction="#onButtonTestAction" text="Button" /><TextArea fx:id="testTextArea" layoutX="226.0" layoutY="28.0" prefHeight="200.0" prefWidth="502.0" promptText="testTextArea" />
 </children></AnchorPane>
 </content>
 </Tab>
+        <Tab text="Log">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
+              <children>
+                <TextArea fx:id="outBox" editable="false" focusTraversable="false" layoutX="10.0" layoutY="10.0" promptText="console output" style="-fx-font-family: &quot;Courier New&quot;;" text="" wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab><Tab text="Test2" />
       </tabs>
     </TabPane>
     <Button fx:id="closeButton" layoutX="838.0" mnemonicParsing="false" onAction="#onCloseButtonAction" prefHeight="32.0" prefWidth="32.0" text="" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

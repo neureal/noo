@@ -40,7 +40,7 @@ public class ActorNetwork {
 		//i = emulated current data tick(=last point within input window), i+(1,2,6) = future ticks
 		int start = Math.max(FXMLController.INPUT_WINDOW_SIZE + FXMLController.PREDICT_WINDOW_SIZE - 1, points.size()-FXMLController.maxTrainHistory);
 		for (int i = start; i < points.size(); i++) {
-			if (FXMLController.runThread == null || FXMLController.runThread.stop) break;
+			if (FXMLController.instance == null || FXMLController.instance.runThread == null || FXMLController.instance.runThread.stop) break;
 			TemporalPoint point = points.get(i);
 			double price = FXMLController.normPrice.deNormalize(point.getData(0)); //original price
 			if (price <= 0) continue;

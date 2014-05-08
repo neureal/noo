@@ -22,5 +22,13 @@
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
             </properties>
+        </action>
+        <action>
+            <actionName>CUSTOM-Native Package</actionName>
+            <displayName>Native Package</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>com.zenjava:javafx-maven-plugin:2.0:native</goal>
+            </goals>
         </action>        
     </actions>

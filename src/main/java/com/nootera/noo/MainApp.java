@@ -17,7 +17,6 @@ import javafx.stage.WindowEvent;
 
 
 public class MainApp extends Application {
-
     @Override
     public void start(Stage stage) throws Exception {
         stage.setTitle("Noo");
@@ -36,6 +35,9 @@ public class MainApp extends Application {
         scene.getStylesheets().add("/styles/Styles.css");
         //scene.setCamera(new PerspectiveCamera()); //3D
         stage.setScene(scene);
+		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override public void handle(WindowEvent e) { onClose(e); }
+		});
 //		stage.setOnShown(new EventHandler<WindowEvent>() {
 //			@Override public void handle(WindowEvent e) { onShown(e); }
 //		});
@@ -55,6 +57,12 @@ public class MainApp extends Application {
 //	public void onShown(WindowEvent e) {
 //		System.out.println("onShown");
 //	}
+	public void onClose(WindowEvent e) {
+		System.out.println("onClose");
+		if (FXMLController.instance != null) {
+			FXMLController.instance.close();
+		}
+	}
 
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
