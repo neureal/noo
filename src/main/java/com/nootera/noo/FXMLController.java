@@ -186,8 +186,8 @@ public class FXMLController implements Initializable {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				txtBTC.setText(String.format("BTC [%,15.7f]", BTCbal));
-				txtUSD.setText(String.format("USD [%,15.2f]", USDbal));
+				txtBTC.setText(String.format("%,15.7f", BTCbal));
+				txtUSD.setText(String.format("%,15.2f", USDbal));
 			}
 		});
 	}

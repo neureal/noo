@@ -29,7 +29,23 @@
                   <yAxis>
                     <NumberAxis animated="false" side="LEFT" />
                   </yAxis>
-                </LineChart>
+                </LineChart><HBox>
+<children><Pane HBox.hgrow="ALWAYS" /><Label maxHeight="1.7976931348623157E308" style="-fx-text-fill: #034311;" text="BTC ">
+<font>
+<Font name="Trebuchet MS" size="14.0" />
+</font>
+</Label><Label fx:id="txtBTCtotal" prefWidth="300.0" style="-fx-text-fill: #034311;" text="0.0">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font></Label><Pane HBox.hgrow="ALWAYS" /><Label maxHeight="1.7976931348623157E308" style="-fx-text-fill: #034311;" text="USD ">
+<font>
+<Font name="Trebuchet MS" size="14.0" />
+</font>
+</Label><Label fx:id="txtUSDtotal" layoutY="16.0" prefWidth="300.0" style="-fx-text-fill: #034311;" text="0.0">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font></Label><Pane HBox.hgrow="ALWAYS" />
+</children></HBox>
 				<LineChart fx:id="chartTrading" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutY="382.0" legendSide="TOP" prefHeight="168.0" title="Trading" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 				  <xAxis>
 				    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickMarkVisible="true" upperBound="12.0" />
@@ -50,15 +66,7 @@
 </padding>
 </HBox>
 <HBox>
-<children><AnchorPane prefHeight="0.0" prefWidth="200.0">
-<children><Label fx:id="txtBTCtotal" text="BTC" /><Label fx:id="txtUSDtotal" layoutY="16.0" text="USD" />
-</children>
-<opaqueInsets>
-<Insets />
-</opaqueInsets>
-<HBox.margin>
-<Insets left="10.0" />
-</HBox.margin></AnchorPane><Pane HBox.hgrow="ALWAYS" />
+<children><Pane HBox.hgrow="ALWAYS" />
                 <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonRunAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #2a9085;" text="Start" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
                   <font>
                     <Font name="Trebuchet MS" size="22.0" />
@@ -77,7 +85,7 @@
                 </Button><Pane HBox.hgrow="ALWAYS" />
 </children>
 <padding>
-<Insets top="10.0" />
+<Insets top="4.0" />
 </padding>
 </HBox>
 </children></VBox><Label focusTraversable="false" text="Grokker" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
