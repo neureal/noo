@@ -17,6 +17,77 @@
   <children>
     <TabPane layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="768.0" rotateGraphic="false" side="LEFT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0">
       <tabs>
+        <Tab text="Miner">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children><VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<children>
+                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-14.0" layoutY="-19.0" legendSide="TOP" title="Prediction | Btc-e BTC/USD" AnchorPane.bottomAnchor="218.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
+                  <xAxis>
+                    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickLabelsVisible="true" tickMarkVisible="true" upperBound="12.0" />
+                  </xAxis>
+                  <yAxis>
+                    <NumberAxis animated="false" side="LEFT" />
+                  </yAxis>
+                </LineChart>
+				<LineChart fx:id="chartTrading" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutY="382.0" legendSide="TOP" prefHeight="168.0" title="Trading" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+				  <xAxis>
+				    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickMarkVisible="true" upperBound="12.0" />
+				  </xAxis>
+				  <yAxis>
+				    <NumberAxis animated="false" side="LEFT" />
+				  </yAxis>
+<VBox.margin>
+<Insets top="-6.0" />
+</VBox.margin>
+				</LineChart>
+<HBox>
+<children><Pane HBox.hgrow="ALWAYS" />
+                <ProgressBar fx:id="predictProgress" focusTraversable="false" layoutX="36.0" layoutY="550.0" prefWidth="666.0" progress="0.0" AnchorPane.bottomAnchor="40.0" /><Pane HBox.hgrow="ALWAYS" />
+</children>
+<padding>
+<Insets top="-6.0" />
+</padding>
+</HBox>
+<HBox>
+<children><AnchorPane prefHeight="0.0" prefWidth="200.0">
+<children><Label fx:id="txtBTCtotal" text="BTC" /><Label fx:id="txtUSDtotal" layoutY="16.0" text="USD" />
+</children>
+<opaqueInsets>
+<Insets />
+</opaqueInsets>
+<HBox.margin>
+<Insets left="10.0" />
+</HBox.margin></AnchorPane><Pane HBox.hgrow="ALWAYS" />
+                <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonRunAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #2a9085;" text="Start" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
+                  <font>
+                    <Font name="Trebuchet MS" size="22.0" />
+                  </font>
+                  <textFill>
+                    <Color blue="0.161" green="0.161" red="0.161" />
+                  </textFill>
+                </Button><Pane HBox.hgrow="ALWAYS" />
+                <Button fx:id="buttonClear" alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonClearAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #902a5a;" text="Stop" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
+                  <font>
+                    <Font name="Trebuchet MS" size="22.0" />
+                  </font>
+                  <textFill>
+                    <Color blue="0.161" green="0.161" red="0.161" />
+                  </textFill>
+                </Button><Pane HBox.hgrow="ALWAYS" />
+</children>
+<padding>
+<Insets top="10.0" />
+</padding>
+</HBox>
+</children></VBox><Label focusTraversable="false" text="Grokker" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font></Label>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
 <Tab text="Wallet">
 <content>
 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
@@ -359,69 +430,6 @@
 </children></AnchorPane>
 </content>
 </Tab>
-        <Tab text="Miner">
-          <content>
-            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-              <children><VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-<children>
-                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-14.0" layoutY="-19.0" legendSide="TOP" title="Prediction | Btc-e BTC/USD" AnchorPane.bottomAnchor="218.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
-                  <xAxis>
-                    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickLabelsVisible="true" tickMarkVisible="true" upperBound="12.0" />
-                  </xAxis>
-                  <yAxis>
-                    <NumberAxis animated="false" side="LEFT" />
-                  </yAxis>
-                </LineChart>
-				<LineChart fx:id="chartTrading" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutY="382.0" legendSide="TOP" prefHeight="168.0" title="Trading | BTC/USD" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-				  <xAxis>
-				    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickMarkVisible="true" upperBound="12.0" />
-				  </xAxis>
-				  <yAxis>
-				    <NumberAxis animated="false" side="LEFT" />
-				  </yAxis>
-<VBox.margin>
-<Insets top="-6.0" />
-</VBox.margin>
-				</LineChart>
-<HBox>
-<children><Pane HBox.hgrow="ALWAYS" />
-                <ProgressBar fx:id="predictProgress" focusTraversable="false" layoutX="36.0" layoutY="550.0" prefWidth="666.0" progress="0.0" AnchorPane.bottomAnchor="40.0" /><Pane HBox.hgrow="ALWAYS" />
-</children>
-<padding>
-<Insets top="-6.0" />
-</padding>
-</HBox>
-<HBox>
-<children><Pane HBox.hgrow="ALWAYS" />
-                <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonRunAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #2a9085;" text="Start" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
-                  <font>
-                    <Font name="Trebuchet MS" size="22.0" />
-                  </font>
-                  <textFill>
-                    <Color blue="0.161" green="0.161" red="0.161" />
-                  </textFill>
-                </Button><Pane HBox.hgrow="ALWAYS" />
-                <Button fx:id="buttonClear" alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonClearAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #902a5a;" text="Stop" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
-                  <font>
-                    <Font name="Trebuchet MS" size="22.0" />
-                  </font>
-                  <textFill>
-                    <Color blue="0.161" green="0.161" red="0.161" />
-                  </textFill>
-                </Button><Pane HBox.hgrow="ALWAYS" />
-</children>
-<padding>
-<Insets top="10.0" />
-</padding>
-</HBox>
-</children></VBox><Label focusTraversable="false" text="Grokker" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
-<font>
-<Font name="Trebuchet MS Bold" size="24.0" />
-</font></Label>
-              </children>
-            </AnchorPane>
-          </content>
-        </Tab>
 <Tab text="Robot">
 <content>
 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">

@@ -49,13 +49,13 @@ public class FXMLController implements Initializable {
 	
 	public static TemporalMLDataSet dataSet;
 	public static final int INPUT_WINDOW_SIZE = 48; //
-	public static final int PREDICT_WINDOW_SIZE = 1; //
-	public static final int maxTrainHistory = 200; //number ticks/points backwards to keep(in data) for training
+	public static final int PREDICT_WINDOW_SIZE = 3; //
+	public static final int maxTrainHistory = 300; //number ticks/points backwards to keep(in data) for training
 	public static final int predictTrainEpochs = 20; //
 	public static final int predictTrainCycles = 400; //
 	public static final int ActTrainEpochs = 160; //
 	public static final int actTrainCycles = 400; //
-	public static final long minTickTime = 200; //
+	public static final long minTickTime = 300; //
 	public static void initDataSet() {
 		dataSet = new TemporalMLDataSet(INPUT_WINDOW_SIZE, PREDICT_WINDOW_SIZE); //input points window size, predict points window size
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, true)); //price
@@ -98,12 +98,12 @@ public class FXMLController implements Initializable {
 		@Override
 		public void run() {
 			updateProgress(predictProgress, -1.0d);
-			chartAddSingle(chartPrediction, 1, 0.0d); //hack to visually show prediction at same tick as predicted
+			//chartAddSingle(chartPrediction, 1, 0, 0.0d); //hack to visually show prediction at same tick as predicted
 			GetMarketFile mkt_btce = null;
 			try {
 				initDataSet();
-				Predictor predictor = new Predictor();
-				Actor actor = new Actor();
+				Miner predictor = new Miner();
+				Robot actor = new Robot();
 				mkt_btce = new GetMarketFile();
 				
 				while (mkt_btce.getNewPoint(dataSet)) {
@@ -129,14 +129,14 @@ public class FXMLController implements Initializable {
 						final BasicMLData inputP = dataSet.generateInputNeuralData(newidx - INPUT_WINDOW_SIZE + 1); //it subtracts one from index anyway
 						double[] predictions = predictor.predict(inputP);
 						for (int i=0; i < predictions.length; i++) point.setData(descPredStart+i, predictions[i]); //add prediction data share output
-						//chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), 0.0d, 0.0d); //comment out when doing both prediction and trading
+						//chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), predictions, 0.0d, 0.0d); //comment out when doing both prediction and trading
 
 						//****action training
 						actor.train();
 						point.setData(2, actor.balBTC); //add ongoing balances so that we can move our training window
 						point.setData(3, actor.balUSD);
-						//chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), actor.tradeBTC*0.05d+50d, Math.tanh(actor.balUSD/exptTotalUSD*Math.PI)*100d);
-						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), normPrice.deNormalize(point.getData(descPredStart)), actor.tradeBTC*0.5d+50d, Math.tanh(actor.balUSD/exptTotalUSD*Math.PI)*100d);
+						setCurrencyBalance(txtBTCtotal, txtUSDtotal, actor.balBTC, actor.balUSD);
+						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), predictions, actor.tradeBTC*0.5d+50d, Math.tanh(actor.balUSD/exptTotalUSD*Math.PI)*100d);
 
 
 						//****this is where we would actually execute our trade using actor.buysellBTC and actor.tradeBTC
@@ -163,6 +163,8 @@ public class FXMLController implements Initializable {
 	public ProgressBar predictProgress;
 	private Button buttonClear;
 	private Button buttonRun;
+	public Label txtBTCtotal;
+	public Label txtUSDtotal;
 	
     @FXML
     private void onButtonRunAction(ActionEvent event) {
@@ -180,6 +182,16 @@ public class FXMLController implements Initializable {
 		}
     }
 	
+	public static void setCurrencyBalance(final Label txtBTC, final Label txtUSD, final double BTCbal, final double USDbal) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				txtBTC.setText(String.format("BTC [%,15.7f]", BTCbal));
+				txtUSD.setText(String.format("USD [%,15.2f]", USDbal));
+			}
+		});
+	}
+	
 	public static void updateProgress(final ProgressBar bar, final double value) {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -189,46 +201,46 @@ public class FXMLController implements Initializable {
 		});
 	}
 	
-	public static void chartAddSingle(final LineChart chart, final int seriesIdx, final double value) {
+	public static void chartAddSingle(final LineChart chart, final int seriesIdx, final int xpos, final double value) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
 				XYChart.Series s = (XYChart.Series)chart.getData().get(seriesIdx);
-				s.getData().add(new XYChart.Data(chartx, value));
+				s.getData().add(new XYChart.Data(xpos, value));
 			}
 		});
 	}
 	
 	public static int chartx = 1;
-	public static void chartAdd(final LineChart chart1, final LineChart chart2, final double actual, final double prediction, final double trade, final double bal) {
+	public static void chartAdd(final LineChart miner, final LineChart robot, final double actual, final double[] predictions, final double trade, final double bal) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				XYChart.Series series0 = (XYChart.Series)chart1.getData().get(0);
-				series0.getData().add(new XYChart.Data(chartx, actual));
-				XYChart.Series series1 = (XYChart.Series)chart1.getData().get(1);
-				series1.getData().add(new XYChart.Data(chartx, prediction));
+				XYChart.Series series12 = (XYChart.Series)miner.getData().get(1);
+				for (int i=0; i < predictions.length; i++) series12.getData().add(new XYChart.Data(chartx+1+i, normPrice.deNormalize(predictions[i]))); //hack to visually show prediction at same tick as predicted
+				XYChart.Series series11 = (XYChart.Series)miner.getData().get(0);
+				series11.getData().add(new XYChart.Data(chartx, actual));
 				
-				XYChart.Series series2 = (XYChart.Series)chart2.getData().get(0);
-				series2.getData().add(new XYChart.Data(chartx, trade));
-				XYChart.Series series3 = (XYChart.Series)chart2.getData().get(1);
-				series3.getData().add(new XYChart.Data(chartx, bal));
+				XYChart.Series series21 = (XYChart.Series)robot.getData().get(0);
+				series21.getData().add(new XYChart.Data(chartx, trade));
+				XYChart.Series series22 = (XYChart.Series)robot.getData().get(1);
+				series22.getData().add(new XYChart.Data(chartx, bal));
 				
 				chartx++;
 				
-				NumberAxis xaxis1 = (NumberAxis)chart1.getXAxis();
-				xaxis1.setUpperBound(chartx);
+				NumberAxis xaxis1 = (NumberAxis)miner.getXAxis();
+				xaxis1.setUpperBound(chartx+PREDICT_WINDOW_SIZE);
 				
-				NumberAxis xaxis2 = (NumberAxis)chart2.getXAxis();
+				NumberAxis xaxis2 = (NumberAxis)robot.getXAxis();
 				xaxis2.setUpperBound(chartx);
 				
 				if (chartx > tickVisWindow) {
 					xaxis1.setLowerBound(xaxis1.getLowerBound() + 1);
 					xaxis2.setLowerBound(xaxis2.getLowerBound() + 1);
-					series0.getData().remove(0);
-					series1.getData().remove(0);
-					series2.getData().remove(0);
-					series3.getData().remove(0);
+					series11.getData().remove(0);
+					series12.getData().remove(0);
+					series21.getData().remove(0);
+					series22.getData().remove(0);
 				}
 				
 				//xaxis.invalidateRange(chart.getData());
@@ -334,13 +346,13 @@ public class FXMLController implements Initializable {
 		xaxis1.setLowerBound(1);
 		xaxis1.setUpperBound(chartx);
 		
-		XYChart.Series series0 = new XYChart.Series();
-        series0.setName("Actual");
-        
         XYChart.Series series1 = new XYChart.Series();
         series1.setName("Prediction");
 		
-        chartPrediction.getData().addAll(series0, series1);
+		XYChart.Series series0 = new XYChart.Series();
+        series0.setName("Actual");
+		
+        chartPrediction.getData().addAll(series1, series0);
 		
 		//Trading Chart
 		NumberAxis xaxis2 = (NumberAxis)chartTrading.getXAxis();

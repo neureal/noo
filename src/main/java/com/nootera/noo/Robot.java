@@ -18,7 +18,7 @@ import org.encog.neural.pattern.JordanPattern;
  *
  * @author Wil
  */
-public class Actor {
+public class Robot {
 	//winning values after train
 	public double balBTC = 0.0d;
 	public double balUSD = 0.0d;
@@ -55,13 +55,13 @@ public class Actor {
 //	}
 	
 	private final MLTrain train;
-	public Actor() {
-//		train = new NeuralPSO(createNetwork(), new NguyenWidrowRandomizer(), new ActorScore(), FXMLController.actTrainCycles);
+	public Robot() {
+//		train = new NeuralPSO(createNetwork(), new NguyenWidrowRandomizer(), new RobotScore(), FXMLController.actTrainCycles);
 		
 		train = new MLMethodGeneticAlgorithm(new MethodFactory() {
 			@Override
 			public MLMethod factor() { return createNetwork(); }
-		}, new ActorScore(), FXMLController.actTrainCycles);
+		}, new RobotScore(), FXMLController.actTrainCycles);
 	}
 	
 	private int epoch;
@@ -78,16 +78,16 @@ public class Actor {
 		
 		if (FXMLController.instance == null || FXMLController.instance.runThread == null || FXMLController.instance.runThread.stop) return;
 		MLMethod method = train.getMethod(); //winning network
-		ActorNetwork pilot = new ActorNetwork(method, this, false); //change to true to show how winning network traded
-		pilot.scoreActor();
+		RobotNetwork pilot = new RobotNetwork(method, this, false); //change to true to show how winning network traded
+		pilot.scoreRobot();
 	}
 }
 
-class ActorScore implements CalculateScore {
+class RobotScore implements CalculateScore {
 	@Override
 	public double calculateScore(MLMethod network) {
-		ActorNetwork pilot = new ActorNetwork(network);
-		return pilot.scoreActor();
+		RobotNetwork pilot = new RobotNetwork(network);
+		return pilot.scoreRobot();
 	}
 	@Override
 	public boolean shouldMinimize() { return false; }

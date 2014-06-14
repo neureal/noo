@@ -14,20 +14,20 @@ import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.temporal.TemporalPoint;
 import org.encog.neural.networks.BasicNetwork;
 
-public class ActorNetwork {
+public class RobotNetwork {
 
 	private final MLMethod method;
-	private final Actor actor;
+	private final Robot actor;
 	private final boolean log;
 
-	public ActorNetwork(MLMethod method) {
+	public RobotNetwork(MLMethod method) {
 		this.method = method; this.actor = null; this.log = false;
 	}
-	public ActorNetwork(MLMethod method, Actor actor, boolean log) {
+	public RobotNetwork(MLMethod method, Robot actor, boolean log) {
 		this.method = method; this.actor = actor; this.log = log;
 	}
 	
-	public double scoreActor() {
+	public double scoreRobot() {
 		double balBTC = 0.0d;
 		double balUSD = 0.0d;
 		int totaltrades = 0;
@@ -50,10 +50,10 @@ public class ActorNetwork {
 			}
 			
 			MLData input = FXMLController.dataSet.generateInputNeuralData(i - FXMLController.INPUT_WINDOW_SIZE + 2); //this function goes back one to grab data, actual index start is minus one from this index
-			input = new BasicMLData(Arrays.copyOf(input.getData(), Actor.INPUT_NEURONS_ALL));
-			input.setData(Actor.INPUT_NEURONS, Math.tanh(balBTC/FXMLController.exptTotalBTC*Math.PI));
-			input.setData(Actor.INPUT_NEURONS+1, Math.tanh(balUSD/FXMLController.exptTotalUSD*Math.PI));
-			for (int j=0; j < FXMLController.PREDICT_WINDOW_SIZE; j++) input.setData(Actor.INPUT_NEURONS+2+j, point.getData(FXMLController.descPredStart+j)); //currently predicted price for next tick
+			input = new BasicMLData(Arrays.copyOf(input.getData(), Robot.INPUT_NEURONS_ALL));
+			input.setData(Robot.INPUT_NEURONS, Math.tanh(balBTC/FXMLController.exptTotalBTC*Math.PI));
+			input.setData(Robot.INPUT_NEURONS+1, Math.tanh(balUSD/FXMLController.exptTotalUSD*Math.PI));
+			for (int j=0; j < FXMLController.PREDICT_WINDOW_SIZE; j++) input.setData(Robot.INPUT_NEURONS+2+j, point.getData(FXMLController.descPredStart+j)); //currently predicted price for next tick
 			
 			MLData output = ((BasicNetwork)this.method).compute(input);
 			

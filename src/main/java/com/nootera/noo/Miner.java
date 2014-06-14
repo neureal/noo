@@ -31,7 +31,7 @@ import org.encog.neural.pattern.JordanPattern;
  *
  * @author Wil
  */
-public class Predictor {
+public class Miner {
 	
 	private static BasicNetwork createNetwork() {
 		JordanPattern pattern = new JordanPattern();
@@ -59,7 +59,7 @@ public class Predictor {
 	
 	private final MLTrain train;
 	private BasicNetwork network;
-	public Predictor() {
+	public Miner() {
 		network = createNetwork();
 		CalculateScore score = new TrainingSetScore(FXMLController.dataSet);
 		
