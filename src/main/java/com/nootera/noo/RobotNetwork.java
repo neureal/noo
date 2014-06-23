@@ -28,26 +28,30 @@ public class RobotNetwork {
 	}
 	
 	public double scoreRobot() {
-		double balBTC = 0.0d;
-		double balUSD = 0.0d;
+		double balBTC = FXMLController.startBalBTC;
+		double balUSD = FXMLController.startBalUSD;
 		int totaltrades = 0;
-		
-		int buysellBTC = 0; //0 = do nothing, +1 = buy, -1 = sell
+		int buysellBTC = 0; //0 = do nothing, +1 = buy BTC, -1 = sell BTC
 		double tradeBTC = 0.0d;
 		
 		List<TemporalPoint> points = FXMLController.dataSet.getPoints();
 		
-		//i = emulated current data tick(=last point within input window), i+(1,2,6) = future ticks
+		//i = emulated data tick of last point within input window, i+(1,2,6) = emulated future ticks (for training)
 		int start = Math.max(FXMLController.INPUT_WINDOW_SIZE + FXMLController.PREDICT_WINDOW_SIZE - 1, points.size()-FXMLController.maxTrainHistory);
+		//the last point in points is always the real current tick
+		if (actor != null) start = points.size()-1;
+		int startBalIdx = start-1;
+		if (startBalIdx >= 0) {
+			TemporalPoint lastPoint = points.get(startBalIdx);
+			balBTC = lastPoint.getData(FXMLController.descInputCount);
+			balUSD = lastPoint.getData(FXMLController.descInputCount+1);
+		}
+		
 		for (int i = start; i < points.size(); i++) {
 			if (FXMLController.instance == null || FXMLController.instance.runThread == null || FXMLController.instance.runThread.stop) break;
 			TemporalPoint point = points.get(i);
 			double price = FXMLController.normPrice.deNormalize(point.getData(0)); //original price
 			if (price <= 0) continue;
-			if (i == start) { //get the balances at the start of our past maxTrainHistory 
-				balBTC = point.getData(2);
-				balUSD = point.getData(3);
-			}
 			
 			MLData input = FXMLController.dataSet.generateInputNeuralData(i - FXMLController.INPUT_WINDOW_SIZE + 2); //this function goes back one to grab data, actual index start is minus one from this index
 			input = new BasicMLData(Arrays.copyOf(input.getData(), Robot.INPUT_NEURONS_ALL));
@@ -67,7 +71,7 @@ public class RobotNetwork {
 					balUSD = 0.0d;
 					tradeBTC = balUSDo/price;
 				}
-				balBTC += tradeBTC*FXMLController.fee;
+				balBTC += tradeBTC*FXMLController.feeLoss;
 				totaltrades++;
 				buysellBTC = +1;
 				if (log) System.out.println(String.format("[%5d] Price[%7.2f] BoughtBTC[%9.4f]   BTC[%,12.4f] USD[%,15.2f]", i, price, tradeBTC, balBTC, balUSD));
@@ -80,7 +84,7 @@ public class RobotNetwork {
 					balBTC = 0.0d;
 					tradeBTC = balBTCo;
 				}
-				balUSD += tradeBTC*price*FXMLController.fee;
+				balUSD += tradeBTC*price*FXMLController.feeLoss;
 				totaltrades++;
 				buysellBTC = -1;
 				if (log) System.out.println(String.format("[%5d] Price[%7.2f]   SoldBTC[%9.4f]   balBTC[%,12.4f] balUSD[%,15.2f]", i, price, tradeBTC, balBTC, balUSD));
@@ -91,8 +95,8 @@ public class RobotNetwork {
 			actor.balBTC = balBTC;
 			actor.balUSD = balUSD;
 			actor.totaltrades = totaltrades;
-			actor.buysellBTC = buysellBTC;
-			actor.tradeBTC = tradeBTC; //last trade ammount for current point/tick
+			actor.buysellBTC = buysellBTC; //trade direction for real current point/tick
+			actor.tradeBTC = tradeBTC; //trade ammount for real current point/tick
 		}
 		if (log) System.out.println(String.format("Total Trades [%5d] balUSD[%,15.2f]", totaltrades, balUSD));
 		return balUSD; //maximize this

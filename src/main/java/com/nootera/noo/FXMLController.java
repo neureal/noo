@@ -1,5 +1,5 @@
 /*
- * Copyright Ã‚Â© 2014 BownCo
+ * Copyright Ãƒâ€šÃ‚Â© 2014 BownCo
  * All rights reserved.
  */
 
@@ -28,9 +28,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import org.btc4j.core.BtcException;
-import org.btc4j.core.BtcInfo;
-import org.btc4j.daemon.BtcDaemon;
 import org.encog.Encog;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;
@@ -40,6 +37,10 @@ import org.encog.ml.data.temporal.TemporalMLDataSet;
 import org.encog.ml.data.temporal.TemporalPoint;
 import org.encog.util.arrayutil.NormalizationAction;
 import org.encog.util.arrayutil.NormalizedField;
+import org.noo4j.core.BtcException;
+import org.noo4j.core.BtcInfo;
+import org.noo4j.core.BtcMiningInfo;
+import org.noo4j.daemon.BtcDaemon;
 
 public class FXMLController implements Initializable {
 	public static FXMLController instance;
@@ -55,18 +56,18 @@ public class FXMLController implements Initializable {
 	public static final int predictTrainCycles = 400; //
 	public static final int ActTrainEpochs = 160; //
 	public static final int actTrainCycles = 400; //
-	public static final long minTickTime = 300; //
+	public static final long minTickTime = 60000; //
 	public static void initDataSet() {
 		dataSet = new TemporalMLDataSet(INPUT_WINDOW_SIZE, PREDICT_WINDOW_SIZE); //input points window size, predict points window size
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, true)); //price
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //volume
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //high
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //low
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //bid
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //ask
+//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //timestamp
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //current BTC total
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //current USD total
-//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //high
-//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //low
-//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //bid
-//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //ask
-//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //timestamp
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 1 tick
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 2 tick
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 3 tick
@@ -78,8 +79,8 @@ public class FXMLController implements Initializable {
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 9 tick
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 10 tick
 	}
-	public static final int descPredStart = 4; //predicted price description start
-	public static final int descInputCount = 2; //total number of values per input
+	public static final int descInputCount = 6; //number of input values (price,vol,etc)
+	public static final int descPredStart = descInputCount+2; //predicted price description start
 	
 	public static final NormalizedField normPrice = new NormalizedField(NormalizationAction.Normalize, "price", 1200.0d, 0.0d, 1.0d, 0.0d); //price
 	public static final NormalizedField normVolume = new NormalizedField(NormalizationAction.Normalize, "volume", 100000.0d, 0.0d, 1.0d, 0.0d); //volume
@@ -88,7 +89,7 @@ public class FXMLController implements Initializable {
 	public static final double startBalBTC = 1.0d;
 	public static final double startBalUSD = 0.0d;
 	public static final NormalizedField trade = new NormalizedField(NormalizationAction.Normalize, "trade", 100.0d, -100.0d, 1.0d, -1.0d); //max BTC trade size
-	public static final double fee = 0.99d; //fee per trade
+	public static final double feeLoss = 0.99d; //fee per trade
 	public static final double exptTotalBTC = 100.0d;
 	public static final double exptTotalUSD = 1000.0d;
 	
@@ -106,8 +107,8 @@ public class FXMLController implements Initializable {
 				Robot actor = new Robot();
 				mkt_btce = new GetMarketFile();
 				
-				while (mkt_btce.getNewPoint(dataSet)) {
-				//while (GetTicker.getNewPoint(dataSet)) {
+				//while (mkt_btce.getNewPoint(dataSet)) { //emulated new data point/tick
+				while (GetTicker.getNewPoint(dataSet)) { //real new data point/tick
 					if (stop) break;
 					long startT = (new Date()).getTime();
 					
@@ -133,13 +134,18 @@ public class FXMLController implements Initializable {
 
 						//****action training
 						actor.train();
-						point.setData(2, actor.balBTC); //add ongoing balances so that we can move our training window
-						point.setData(3, actor.balUSD);
-						setCurrencyBalance(txtBTCtotal, txtUSDtotal, actor.balBTC, actor.balUSD);
-						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), predictions, actor.tradeBTC*0.5d+50d, Math.tanh(actor.balUSD/exptTotalUSD*Math.PI)*100d);
-
-
+						
 						//****this is where we would actually execute our trade using actor.buysellBTC and actor.tradeBTC
+						//pull actual balance from API, emulate for now
+						double balBTC = actor.balBTC;
+						double balUSD = actor.balUSD;
+						
+						point.setData(descInputCount, balBTC);
+						point.setData(descInputCount+1, balUSD);
+						
+						//****send to display
+						setCurrencyBalance(txtBTCtotal, txtUSDtotal, balBTC, balUSD);
+						chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), predictions, actor.tradeBTC*0.5d+50d, Math.tanh(balUSD/exptTotalUSD*Math.PI)*100d);
 					}
 					long elapsedT = (new Date()).getTime() - startT;
 					if (elapsedT < minTickTime) Thread.sleep(minTickTime - elapsedT);
@@ -273,14 +279,25 @@ public class FXMLController implements Initializable {
     @FXML
     private void onButtonTestAction(ActionEvent event) {
 		try {
-//			BtcInfo info = noocoind.getInformation();
-//			testTextArea.appendText(info.getBalance().toString()+"\r\n");
+			BtcInfo info = noocoind.getInformation();
+			testTextArea.appendText(String.format("getBalance\t\t\t[%,16.8f]\r\n", info.getBalance()));
+			testTextArea.appendText(String.format("getUnconfirmed\t\t[%,16.8f]\r\n", info.getUnconfirmed()));
+			testTextArea.appendText(String.format("getNewMint\t\t[%,16.8f]\r\n", info.getNewMint()));
+			testTextArea.appendText(String.format("getStake\t\t\t[%,16.8f]\r\n", info.getStake()));
+			testTextArea.appendText(String.format("getMoneySupply\t\t[%,16.8f]\r\n", info.getMoneySupply()));
 			
-			String address = noocoind.getAccountAddress("");
-			testTextArea.appendText(address+"\r\n");
+//			BtcMiningInfo info = noocoind.getMiningInformation();
+//			testTextArea.appendText(info.getNetworkGhps()+"\r\n");
 			
-//			BigDecimal balance = noocoind.getBalance(1);
-//			testTextArea.appendText(balance.toString()+"\r\n");
+//			String address = noocoind.getAccountAddress("");
+//			testTextArea.appendText(address+"\r\n");
+			
+//			BigDecimal balance0 = noocoind.getBalance(0);
+//			BigDecimal balance1 = noocoind.getBalance(1);
+//			BigDecimal balance2 = noocoind.getBalance(2);
+//			testTextArea.appendText("0 conf: "+balance0.toString()+"\r\n");
+//			testTextArea.appendText("1 conf: "+balance1.toString()+"\r\n");
+//			testTextArea.appendText("2 conf: "+balance2.toString()+"\r\n");
 			
 			//daemon.walletPassphrase("GBxDyFeDMYEHucz6XFRpXDDB2woCU4wi96KD9widEmsj");
 			//daemon.sendToAddress("mm48fadf1wJVF341ArWmtwZZGV8s34UGWD", BigDecimal.valueOf(0.72));
@@ -347,10 +364,10 @@ public class FXMLController implements Initializable {
 		xaxis1.setUpperBound(chartx);
 		
         XYChart.Series series1 = new XYChart.Series();
-        series1.setName("Prediction");
+        series1.setName("Actual");
 		
 		XYChart.Series series0 = new XYChart.Series();
-        series0.setName("Actual");
+        series0.setName("Prediction");
 		
         chartPrediction.getData().addAll(series1, series0);
 		

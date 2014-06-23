@@ -27,10 +27,10 @@ public class GetMarketFile {
 		double priceT = 0.0d;
 		double volumeT = 0.0d;
 		int cnt = 0;
-		int last_timestamp = 0;
+		long last_timestamp = 0;
 		while (csv.next()) {
 			if (FXMLController.instance == null || FXMLController.instance.runThread == null || FXMLController.instance.runThread.stop) break;
-			int timestamp = csv.getInt(0);
+			long timestamp = Math.round(csv.getDouble(0));
 			//if (timestamp >= 1366487996) return false;
 			if (cnt == 0) last_timestamp = timestamp;
 			
@@ -45,10 +45,12 @@ public class GetMarketFile {
 			TemporalPoint point = new TemporalPoint(dataSet.getDescriptions().size());
 			point.setSequence(sequenceNumber);
 			double avg = priceT/(double)cnt;
-			point.setData(0, FXMLController.normPrice.normalize(avg));
-			point.setData(1, FXMLController.normVolume.normalize(volumeT));
-			point.setData(2, FXMLController.startBalBTC); //starting balance for Actor
-			point.setData(3, FXMLController.startBalUSD);
+			int idx = 0;
+			point.setData(idx++, FXMLController.normPrice.normalize(avg));
+			point.setData(idx++, FXMLController.normVolume.normalize(volumeT));
+			//point.setData(idx++, FXMLController.normTimestamp.normalize(timestamp-1230940800)); //bitcoin start date
+			point.setData(idx++, FXMLController.startBalBTC); //starting balance for Robot
+			point.setData(idx++, FXMLController.startBalUSD);
 			dataSet.getPoints().add(point);
 
 			sequenceNumber++;
