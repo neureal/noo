@@ -1,52 +1,57 @@
+/*
+ * Copyright © 2014 BownCo
+ * All rights reserved.
+ */
+
 package com.nootera.noo;
 
-import java.io.IOException;
+import javax.json.JsonObject;
 
-import com.xeiam.xchange.Exchange;
-import com.xeiam.xchange.ExchangeException;
-import com.xeiam.xchange.ExchangeFactory;
-import com.xeiam.xchange.NotAvailableFromExchangeException;
-import com.xeiam.xchange.NotYetImplementedForExchangeException;
-import com.xeiam.xchange.btce.v3.BTCEExchange;
-import com.xeiam.xchange.bter.BTERExchange;
-import com.xeiam.xchange.currency.CurrencyPair;
-import com.xeiam.xchange.dto.marketdata.Ticker;
-import com.xeiam.xchange.service.polling.PollingMarketDataService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.encog.ml.data.temporal.TemporalMLDataSet;
 import org.encog.ml.data.temporal.TemporalPoint;
 
 public class GetTicker {
-	private static final Exchange exchange = ExchangeFactory.INSTANCE.createExchange(BTERExchange.class.getName());
-	private static final PollingMarketDataService marketDataService = exchange.getPollingMarketDataService();
 	
 	private static int sequenceNumber = 1;
-
+	private static String last_last = "";
+	private static String last_bid = "";
+	private static String last_ask = "";
 	public static boolean getNewPoint(TemporalMLDataSet dataSet) {
-		try {
-			Ticker ticker = marketDataService.getTicker(CurrencyPair.BTC_USD);
-			
-			TemporalPoint point = new TemporalPoint(dataSet.getDescriptions().size());
-			point.setSequence(sequenceNumber);
-			int idx = 0;
-			point.setData(idx++, FXMLController.normPrice.normalize(ticker.getLast().doubleValue()));
-			point.setData(idx++, FXMLController.normVolume.normalize(ticker.getVolume().doubleValue()));
-			point.setData(idx++, FXMLController.normPrice.normalize(ticker.getHigh().doubleValue()));
-			point.setData(idx++, FXMLController.normPrice.normalize(ticker.getLow().doubleValue()));
-			point.setData(idx++, FXMLController.normPrice.normalize(ticker.getBid().doubleValue()));
-			point.setData(idx++, FXMLController.normPrice.normalize(ticker.getAsk().doubleValue()));
-//			point.setData(idx++, FXMLController.normTimestamp.normalize(ticker.getTimestamp().getTime()/1000-1230940800)); //bitcoin start date
-			point.setData(idx++, FXMLController.startBalBTC); //starting balance for Robot
-			point.setData(idx++, FXMLController.startBalUSD);
-			dataSet.getPoints().add(point);
-			
-			sequenceNumber++;
-			System.out.println(ticker.toString());
-			return true;
-		} catch (ExchangeException | NotAvailableFromExchangeException | NotYetImplementedForExchangeException | IOException ex) {
-			return false;
+		//try {
+		JsonObject jo = null;
+		while (true) {
+			jo = APIUtil.jsonObject("https://www.bitstamp.net/api/ticker/", "");
+			if (
+				!last_last.equals(APIUtil.jsonString(jo.get("last")))
+				|| !last_bid.equals(APIUtil.jsonString(jo.get("bid")))
+				|| !last_ask.equals(APIUtil.jsonString(jo.get("ask")))
+			) break;
+			try { Thread.sleep(10000); } catch (InterruptedException ex) { }
 		}
-	}
+		last_last = APIUtil.jsonString(jo.get("last"));
+		last_bid = APIUtil.jsonString(jo.get("bid"));
+		last_ask = APIUtil.jsonString(jo.get("ask"));
 
+		TemporalPoint point = new TemporalPoint(dataSet.getDescriptions().size());
+		point.setSequence(sequenceNumber);
+		int idx = 0;
+		point.setData(idx++, FXMLController.normPrice.normalize(APIUtil.jsonBigDecimal(jo.get("last")).doubleValue()));
+		point.setData(idx++, FXMLController.normVolume.normalize(APIUtil.jsonBigDecimal(jo.get("volume")).doubleValue()));
+		point.setData(idx++, FXMLController.normPrice.normalize(APIUtil.jsonBigDecimal(jo.get("high")).doubleValue()));
+		point.setData(idx++, FXMLController.normPrice.normalize(APIUtil.jsonBigDecimal(jo.get("low")).doubleValue()));
+		point.setData(idx++, FXMLController.normPrice.normalize(APIUtil.jsonBigDecimal(jo.get("bid")).doubleValue()));
+		point.setData(idx++, FXMLController.normPrice.normalize(APIUtil.jsonBigDecimal(jo.get("ask")).doubleValue()));
+		point.setData(idx++, FXMLController.normPrice.normalize(APIUtil.jsonBigDecimal(jo.get("vwap")).doubleValue()));
+		point.setData(idx++, FXMLController.normTimestamp.normalize(APIUtil.jsonBigInteger(jo.get("timestamp")).doubleValue()-1230940800)); //bitcoin start date
+		point.setData(idx++, FXMLController.startBalBTC); //starting balance for Robot
+		point.setData(idx++, FXMLController.startBalUSD);
+		dataSet.getPoints().add(point);
+
+		sequenceNumber++;
+		//System.out.println(jo.toString());
+		return true;
+		//} catch (ExchangeException | NotAvailableFromExchangeException | NotYetImplementedForExchangeException | IOException ex) {
+		//	return false;
+		//}
+	}
 }
