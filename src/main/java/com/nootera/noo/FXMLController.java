@@ -1,5 +1,5 @@
 /*
- * Copyright Ãƒâ€šÃ‚Â© 2014 BownCo
+ * Copyright © 2014 BownCo
  * All rights reserved.
  */
 
@@ -9,15 +9,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
@@ -28,8 +31,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import org.apache.commons.lang3.ArrayUtils;
 import org.encog.Encog;
-import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.temporal.TemporalDataDescription;
@@ -37,9 +40,10 @@ import org.encog.ml.data.temporal.TemporalMLDataSet;
 import org.encog.ml.data.temporal.TemporalPoint;
 import org.encog.util.arrayutil.NormalizationAction;
 import org.encog.util.arrayutil.NormalizedField;
+import org.noo4j.core.BtcAccount;
+import org.noo4j.core.BtcAddress;
 import org.noo4j.core.BtcException;
 import org.noo4j.core.BtcInfo;
-import org.noo4j.core.BtcMiningInfo;
 import org.noo4j.daemon.BtcDaemon;
 
 public class FXMLController implements Initializable {
@@ -56,7 +60,7 @@ public class FXMLController implements Initializable {
 	public static final int predictTrainCycles = 400; //
 	public static final int ActTrainEpochs = 160; //
 	public static final int actTrainCycles = 400; //
-	public static final long minTickTime = 60000; //
+	public static final long minTickTime = 1000; //
 	public static void initDataSet() {
 		dataSet = new TemporalMLDataSet(INPUT_WINDOW_SIZE, PREDICT_WINDOW_SIZE); //input points window size, predict points window size
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, true)); //price
@@ -65,7 +69,8 @@ public class FXMLController implements Initializable {
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //low
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //bid
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //ask
-//		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //timestamp
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //vwap (volume-weighted average price)
+		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, true, false)); //timestamp
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //current BTC total
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //current USD total
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 1 tick
@@ -79,7 +84,7 @@ public class FXMLController implements Initializable {
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 9 tick
 		dataSet.addDescription(new TemporalDataDescription(TemporalDataDescription.Type.RAW, false, false)); //predicted price 10 tick
 	}
-	public static final int descInputCount = 6; //number of input values (price,vol,etc)
+	public static final int descInputCount = 8; //number of input values (price,vol,etc)
 	public static final int descPredStart = descInputCount+2; //predicted price description start
 	
 	public static final NormalizedField normPrice = new NormalizedField(NormalizationAction.Normalize, "price", 1200.0d, 0.0d, 1.0d, 0.0d); //price
@@ -256,19 +261,83 @@ public class FXMLController implements Initializable {
 	
 	
 	//************ Wallet
-	public BtcDaemon noocoind;
+	private BtcDaemon noocoind = null;
+    public BtcDaemon noocoind() {
+		if (noocoind == null) {
+			try {
+				noocoind = new BtcDaemon(new URL("http://127.0.0.1:41811"), "noocoinrpc", "sskvik3290f87uvkk2sovllshj390gf876fdSGkza1");
+			} catch (MalformedURLException ex) {
+				System.out.println(ex.toString());
+			}
+		}
+		return noocoind;
+	}
 	
     @FXML
 	public TextField walletReceiveAddress;
 	public Label walletSpendableBalance;
 	public Label wallet0ConfirmBalance;
+	public Label walletCoinage;
+	public Label walletNewMint;
+	public Label walletStake;
+	public Label walletMoneySupply;
+	
 	public TextField walletSendAddress;
 	public TextField walletSendAmount;
-	private Button walletButtonSend;
+	public Button walletButtonSend;
 	
     @FXML
     private void onWalletButtonSend(ActionEvent event) {
+		System.out.println("onWalletButtonSend");
+		updateWallet();
 		
+		try {
+			BtcAddress toAddr = noocoind().validateAddress(walletSendAddress.getText());
+			if (toAddr.isValid()) {
+				String tx = noocoind().sendToAddress(toAddr.getAddress(), NumberFormat.getNumberInstance().parse(walletSendAmount.getText()).doubleValue());
+				if (tx != null && !"".equals(tx)) walletSendAddress.setPromptText("SUCCESS!");
+			} else walletSendAddress.setPromptText("Invalid Address");
+		} catch (BtcException ex) {
+			noocoind = null;
+			walletSendAddress.setPromptText(ex.getMessage());
+		} catch (ParseException ex) {
+			System.out.println(ex.toString());
+		}
+		walletSendAddress.setText("");
+		walletSendAmount.setText("");
+    }
+	
+    @FXML
+    private void onWalletUpdate(ActionEvent event) {
+		System.out.println("onWalletUpdate");
+		updateWallet();
+    }
+    @FXML
+    private void onWalletClosed(Event event) {
+		System.out.println("onWalletClosed");
+		if (noocoind == null) updateWallet();
+    }
+	
+	
+    private void updateWallet() {
+		try {
+			String address = noocoind().getAccountAddress("");
+			walletReceiveAddress.setText(address);
+			
+			BtcInfo info = noocoind().getInformation();
+			walletSpendableBalance.setText(String.format("%,18.9f", info.getBalance()));
+			if (info.getUnconfirmed().compareTo(BigDecimal.ZERO) > 0)
+			wallet0ConfirmBalance.setText(String.format("Recieving %,1.9f ИOO", info.getUnconfirmed()));
+			else wallet0ConfirmBalance.setText("");
+			
+			walletCoinage.setText(String.format("%0,20.9f ИOO/days", info.getCoinage()));
+			walletNewMint.setText(String.format("%0,20.9f ИOO", info.getNewMint()));
+			walletStake.setText(String.format("%0,20.9f ИOO", info.getStake()));
+			walletMoneySupply.setText(String.format("%0,20.9f ИOO", info.getMoneySupply()));
+			
+		} catch (BtcException ex) {
+			noocoind = null;
+		}
     }
 	
 	
@@ -277,33 +346,114 @@ public class FXMLController implements Initializable {
 	public TextArea testTextArea;
 	
     @FXML
+    private void onButtonSendPAPIAction(ActionEvent event) {
+		try {
+			//BigInteger test = BigInteger.valueOf(4294967296L);
+			//long test2 = test.longValue();
+			testTextArea.appendText(String.format("PAPI\t\t[%s]\r\n", noocoind().submitVote("https://www.bitstamp.net/api/ticker/", BigDecimal.valueOf(10.01), BigInteger.valueOf(1L))));
+		} catch (BtcException ex) {
+			noocoind = null;
+		}
+		
+	}
+    @FXML
+    private void onButtonSendMPEAction(ActionEvent event) {
+		try {
+			long epoctime = (new Date()).getTime()/1000L; //get seconds
+			epoctime = Math.floorDiv(epoctime, 30L); //predict that the next tick (change in data) will be this data (each tick happens every 30 seconds)
+			byte[] data = (BigInteger.valueOf(epoctime).toByteArray());
+			ArrayUtils.reverse(data); //make little endian
+			testTextArea.appendText(String.format("MPE\t\t[%s]\r\n", noocoind().submitWork("https://www.bitstamp.net/api/ticker/", BigDecimal.valueOf(1.01), BigInteger.valueOf(1L), bytesToHex(data))));
+		} catch (BtcException ex) {
+			noocoind = null;
+		}
+		
+	}
+    @FXML
+    private void onButtonSendNooTESTAction(ActionEvent event) {
+		try {
+			testTextArea.appendText(String.format("NooTEST\t\t\t[%,16.8f]\r\n", noocoind().getCoinage()));
+		} catch (BtcException ex) {
+			noocoind = null;
+		}
+		
+	}
+	
+    @FXML
     private void onButtonTestAction(ActionEvent event) {
 		try {
-			BtcInfo info = noocoind.getInformation();
-			testTextArea.appendText(String.format("getBalance\t\t\t[%,16.8f]\r\n", info.getBalance()));
-			testTextArea.appendText(String.format("getUnconfirmed\t\t[%,16.8f]\r\n", info.getUnconfirmed()));
-			testTextArea.appendText(String.format("getNewMint\t\t[%,16.8f]\r\n", info.getNewMint()));
-			testTextArea.appendText(String.format("getStake\t\t\t[%,16.8f]\r\n", info.getStake()));
-			testTextArea.appendText(String.format("getMoneySupply\t\t[%,16.8f]\r\n", info.getMoneySupply()));
 			
-//			BtcMiningInfo info = noocoind.getMiningInformation();
+			//String url = "https://btc-e.com/api/2/btc_usd/ticker";
+			
+//			JsonObject jo = APIUtil.jsonObject("https://www.bitstamp.net/api/ticker/", "");
+//			//JsonValue jv = APIUtil.jsonValue(APIUtil.jsonHttpPost("https://www.bitstamp.net/api/ticker/", ""));
+//			//JsonValue jo = APIUtil.jsonObject(jv).get("last");
+//			BigDecimal x = APIUtil.jsonBigDecimal(jo.get("last"));
+//			//JsonValue x = jo.get("last");
+//			
+//			testTextArea.appendText(x.toString()+"\r\n");
+			
+//			testTextArea.appendText(APIUtil.jsonHttpPost("https://www.bitstamp.net/api/ticker/", ""));
+			
+			
+			
+			
+			Map<String, BtcAccount> accounts = noocoind().listAccounts();
+			for (Map.Entry<String, BtcAccount> entry : accounts.entrySet()) {
+				//BtcAccount ac = entry.getValue();
+				//String addr = ac.getAccount();
+				//BigDecimal ammt = ac.getAmount();
+				//long conf = ac.getConfirmations();
+				//testTextArea.appendText(String.format("account\t\tname[%s]\t\tvalue[%,16.8f]\r\n", entry.getKey(), entry.getValue().getAmount()));
+			}
+			
+			String acctName = "";
+			List<String> addresses = noocoind().getAddressesByAccount(acctName);
+			for (String entry : addresses) {
+				testTextArea.appendText(String.format("account[%s]\t\taddress [%s]\r\n", acctName, entry));
+			}
+			testTextArea.appendText(String.format("account[%s]\t\taddress [%s] main recieve\r\n", acctName, noocoind().getAccountAddress(acctName)));
+			
+			testTextArea.appendText("\r\n");
+			
+			String toAddrS = "oBmDEWsBp3NFBSJxEuufDdGyn3kbh2sFNp";
+			BtcAddress toAddr = noocoind().validateAddress(toAddrS);
+			testTextArea.appendText(String.format("validateAddress\t\t[%s]\r\n", toAddr.isValid()));
+			
+//			testTextArea.appendText(String.format("sendToAddress\t\t[%s]\r\n", noocoind().sendToAddress(toAddrS, 1111)));
+			
+//			walletpassphrase
+//			noocoind().walletPassphrase("GBxDyFeDMYEHucz6XFRpXDDB2woCU4wi96KD9widEmsj");
+//			walletlock
+//			noocoind().walletLock();
+			
+			
+			
+//			BtcInfo info = noocoind().getInformation();
+//			testTextArea.appendText(String.format("getCoinage\t\t\t[%,16.8f]\r\n", info.getCoinage())); //current coinage available to spend
+//			testTextArea.appendText(String.format("getBalance\t\t\t[%,16.8f]\r\n", info.getBalance())); //real balance available to spend
+//			testTextArea.appendText(String.format("getUnconfirmed\t\t[%,16.8f]\r\n", info.getUnconfirmed())); //amount recieved that still has 0 confirmations
+//			testTextArea.appendText(String.format("getNewMint\t\t[%,16.8f]\r\n", info.getNewMint())); //amount minted that cant be spent
+//			testTextArea.appendText(String.format("getStake\t\t\t[%,16.8f]\r\n", info.getStake())); //amount set aside for staking
+//			testTextArea.appendText(String.format("getMoneySupply\t\t[%,16.8f]\r\n", info.getMoneySupply())); //total money supply of whole coin
+			
+//			BtcMiningInfo info = noocoind().getMiningInformation();
 //			testTextArea.appendText(info.getNetworkGhps()+"\r\n");
 			
-//			String address = noocoind.getAccountAddress("");
-//			testTextArea.appendText(address+"\r\n");
 			
-//			BigDecimal balance0 = noocoind.getBalance(0);
-//			BigDecimal balance1 = noocoind.getBalance(1);
-//			BigDecimal balance2 = noocoind.getBalance(2);
-//			testTextArea.appendText("0 conf: "+balance0.toString()+"\r\n");
-//			testTextArea.appendText("1 conf: "+balance1.toString()+"\r\n");
-//			testTextArea.appendText("2 conf: "+balance2.toString()+"\r\n");
+//			
+//			testTextArea.appendText(String.format("balance *\t\t\t[%,16.8f]\r\n", noocoind().getBalance("*"))); //double, not real
+//			testTextArea.appendText(String.format("balance []\t\t\t[%,16.8f]\r\n", noocoind().getBalance())); //the right way
+//			testTextArea.appendText(String.format("balance 0\t\t\t[%,16.8f]\r\n", noocoind().getBalance(0))); //"" for account doesn't work
+//			testTextArea.appendText(String.format("balance 1\t\t\t[%,16.8f]\r\n", noocoind().getBalance(1)));
+//			testTextArea.appendText(String.format("balance 2\t\t\t[%,16.8f]\r\n", noocoind().getBalance(2)));
 			
 			//daemon.walletPassphrase("GBxDyFeDMYEHucz6XFRpXDDB2woCU4wi96KD9widEmsj");
 			//daemon.sendToAddress("mm48fadf1wJVF341ArWmtwZZGV8s34UGWD", BigDecimal.valueOf(0.72));
 			//daemon.walletLock();
 		} catch (BtcException ex) {
-			System.out.println(ex.getMessage());
+			noocoind = null;
+		} finally {
 		}
     }
 	
@@ -328,35 +478,17 @@ public class FXMLController implements Initializable {
 		}
 		Encog.getInstance().shutdown();
 		
-		//noocoind.stop(); // will stop bitcoind, not required
+		//noocoind().stop(); // will stop noocoind, not required
     }
 	
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 		redirectSystemStreams(outBox);
 		
-		try {
-			//Wallet
-			//Map<String,String> env = System.getenv();
-			//ProcessBuilder builder = new ProcessBuilder("noocoind.exe","-gen=1","-connect=98.202.20.45","-rpcuser=noocoinrpc","-rpcpassword=sskvik3290f87uvkk2sovllshj390gf876fdSGkza1");
-			//Process process = builder.start();
-			
-			noocoind = new BtcDaemon(new URL("http://127.0.0.1:41801"), "noocoinrpc", "sskvik3290f87uvkk2sovllshj390gf876fdSGkza1");
-			
-			String address = noocoind.getAccountAddress("");
-			walletReceiveAddress.setText(address);
-
-			BigDecimal balance = noocoind.getBalance(1);
-			walletSpendableBalance.setText(balance.toString());
-				
-			
-		} catch (BtcException ex) {
-			System.out.println(ex.getMessage());
-		} catch (MalformedURLException ex) {
-			System.out.println(ex.getMessage());
-		} catch (IOException ex) {
-			System.out.println(ex.getMessage());
-		}
+		//Wallet
+		//Map<String,String> env = System.getenv();
+		//ProcessBuilder builder = new ProcessBuilder("noocoind.exe","-gen=1","-connect=98.202.20.45","-rpcuser=noocoinrpc","-rpcpassword=sskvik3290f87uvkk2sovllshj390gf876fdSGkza1");
+		//Process process = builder.start();
 		
 		//Prediction Chart
 		NumberAxis xaxis1 = (NumberAxis)chartPrediction.getXAxis();
@@ -383,6 +515,9 @@ public class FXMLController implements Initializable {
         series3.setName("USD");
         
         chartTrading.getData().addAll(series2, series3);
+		
+		walletSendAmount.addEventFilter(javafx.scene.input.KeyEvent.KEY_TYPED , validateNumber(19, 999999999.999999999d));
+		walletSendAddress.addEventFilter(javafx.scene.input.KeyEvent.KEY_TYPED , validateAlpha(34));
     }
 	
 
@@ -415,5 +550,56 @@ public class FXMLController implements Initializable {
 		System.setOut(new PrintStream(out, true));
 		System.setErr(new PrintStream(out, true));
 	}
-  
+	
+	//GUI text entry validation
+	public javafx.event.EventHandler<javafx.scene.input.KeyEvent> validateNumber(final int max_length, final double max_value) {
+		return new javafx.event.EventHandler<javafx.scene.input.KeyEvent>() {
+			@Override
+			public void handle(javafx.scene.input.KeyEvent e) {
+				TextField txtF = (TextField)e.getSource();
+				//TODO add max_value and min_value check
+				if (txtF.getText().length() >= max_length) e.consume();
+				if (e.getCharacter().matches("[0-9.]")) {
+					if (txtF.getText().contains(".") && e.getCharacter().matches("[.]")) e.consume();
+					else if (txtF.getText().length() == 0 && e.getCharacter().matches("[.]")) e.consume();
+				} else {
+					e.consume();
+				}
+			}
+		};
+	}
+	public javafx.event.EventHandler<javafx.scene.input.KeyEvent> validateLetters(final int max_length) {
+		return new javafx.event.EventHandler<javafx.scene.input.KeyEvent>() {
+			@Override
+			public void handle(javafx.scene.input.KeyEvent e) {
+				TextField txtF = (TextField)e.getSource();
+				if (txtF.getText().length() >= max_length) e.consume();
+				if (!e.getCharacter().matches("[A-Za-z]")) e.consume();
+			}
+		};
+	}
+	public javafx.event.EventHandler<javafx.scene.input.KeyEvent> validateAlpha(final int max_length) {
+		return new javafx.event.EventHandler<javafx.scene.input.KeyEvent>() {
+			@Override
+			public void handle(javafx.scene.input.KeyEvent e) {
+				TextField txtF = (TextField)e.getSource();
+				if (txtF.getText().length() >= max_length) e.consume();
+				if (!e.getCharacter().matches("[A-Za-z0-9]")) e.consume();
+			}
+		};
+	}
+
+	
+	//**** helpers
+	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+	public static String bytesToHex(byte[] bytes) {
+		char[] hexChars = new char[bytes.length * 2];
+		for ( int j = 0; j < bytes.length; j++ ) {
+			int v = bytes[j] & 0xFF;
+			hexChars[j * 2] = hexArray[v >>> 4];
+			hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+		}
+		return new String(hexChars);
+	}
+	
 }
