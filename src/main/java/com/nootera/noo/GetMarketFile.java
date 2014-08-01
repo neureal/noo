@@ -6,7 +6,6 @@
 package com.nootera.noo;
 
 import java.io.File;
-import javafx.application.Application;
 import org.encog.ml.data.temporal.TemporalMLDataSet;
 import org.encog.ml.data.temporal.TemporalPoint;
 import org.encog.util.csv.ReadCSV;

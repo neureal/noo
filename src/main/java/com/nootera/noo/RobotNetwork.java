@@ -8,7 +8,6 @@ package com.nootera.noo;
 import java.util.Arrays;
 import java.util.List;
 import org.encog.ml.MLMethod;
-import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.temporal.TemporalPoint;

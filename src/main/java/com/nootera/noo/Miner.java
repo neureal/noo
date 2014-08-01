@@ -6,25 +6,15 @@
 package com.nootera.noo;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.engine.network.activation.ActivationTANH;
-import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.ml.CalculateScore;
-import org.encog.ml.MLMethod;
-import org.encog.ml.MLRegression;
-import org.encog.ml.MethodFactory;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLData;
-import org.encog.ml.genetic.MLMethodGeneticAlgorithm;
 import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.HybridStrategy;
-import org.encog.ml.train.strategy.RequiredImprovementStrategy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
-import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.neural.networks.training.pso.NeuralPSO;
-import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.neural.pattern.JordanPattern;
 
 /**
