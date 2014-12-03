@@ -1,2 +1,2 @@
-Noo Core
+Noo Demo RPC Client
 ======
