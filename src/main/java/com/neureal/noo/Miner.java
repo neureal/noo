@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-package com.nootera.noo;
+package com.neureal.noo;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.CalculateScore;

@@ -13,7 +13,7 @@
 <?import javafx.scene.text.*?>
 <?scenebuilder-stylesheet ../styles/Styles.css?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" snapToPixel="true" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.nootera.noo.FXMLController">
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" snapToPixel="true" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.neureal.noo.FXMLController">
   <children>
     <TabPane layoutX="0.0" layoutY="0.0" prefHeight="600.0" prefWidth="768.0" rotateGraphic="false" side="LEFT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0">
       <tabs>
