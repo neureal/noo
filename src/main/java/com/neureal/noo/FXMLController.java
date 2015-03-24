@@ -48,7 +48,6 @@ import org.noo4j.daemon.BtcDaemon;
 
 public class FXMLController implements Initializable {
 	public static FXMLController instance;
-	public FXMLController() { instance = this; }
 	
 	private static final int tickVisWindow = 90;
 	
@@ -471,18 +470,9 @@ public class FXMLController implements Initializable {
 	
 	//*******************
 	
-    public void close() {
-		if (runThread != null) {
-			runThread.stop = true;
-			runThread.interrupt();
-		}
-		Encog.getInstance().shutdown();
-		
-		//noocoind().stop(); // will stop noocoind, not required
-    }
-	
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+		instance = this;
 		redirectSystemStreams(outBox);
 		
 		//Wallet
@@ -518,6 +508,15 @@ public class FXMLController implements Initializable {
 		
 		walletSendAmount.addEventFilter(javafx.scene.input.KeyEvent.KEY_TYPED , validateNumber(19, 999999999.999999999d));
 		walletSendAddress.addEventFilter(javafx.scene.input.KeyEvent.KEY_TYPED , validateAlpha(34));
+    }
+    public void close() {
+		if (runThread != null) {
+			runThread.stop = true;
+			runThread.interrupt();
+		}
+		Encog.getInstance().shutdown();
+		
+		//noocoind().stop(); // will stop noocoind, not required
     }
 	
 
