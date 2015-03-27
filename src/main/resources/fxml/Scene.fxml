@@ -20,32 +20,33 @@
 <Tab text="Test1">
 <content>
 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
-<children><TitledPane animated="false" layoutX="7.0" layoutY="28.0" prefHeight="395.0" prefWidth="206.0" text="Predictions">
-<content><VBox prefHeight="200.0" prefWidth="100.0">
-<children><Pane prefHeight="200.0">
-<children><Label layoutX="91.6845703125" layoutY="104.0" text="Label" />
-</children></Pane><Pane prefHeight="200.0">
-<children><Label layoutX="65.6845703125" layoutY="81.0" text="Label" />
-</children></Pane>
-</children></VBox>
-</content>
-</TitledPane><Button fx:id="buttonTest" layoutX="226.0" layoutY="432.0" mnemonicParsing="false" onAction="#onButtonTestAction" text="TEST">
+<children><Button fx:id="buttonTest" layoutX="20.0" layoutY="419.0" mnemonicParsing="false" onAction="#onButtonTestAction" text="TEST">
                            <font>
                               <Font size="14.0" />
-                           </font></Button><TextArea fx:id="testTextArea" layoutX="226.0" layoutY="28.0" prefHeight="396.0" prefWidth="502.0" promptText="testTextArea" />
-                        <Button fx:id="buttonSendPAPI" layoutX="372.0" layoutY="481.0" mnemonicParsing="false" onAction="#onButtonSendPAPIAction" text="Send PAPI">
+                           </font></Button><TextArea fx:id="testTextArea" layoutX="12.0" layoutY="14.0" prefHeight="396.0" prefWidth="711.0" promptText="testTextArea" />
+                        <Button fx:id="buttonSendPAPI" layoutX="603.0" layoutY="480.0" mnemonicParsing="false" onAction="#onButtonSendPAPIAction" text="Send PAPI">
                            <font>
                               <Font size="14.0" />
                            </font></Button>
-                        <Button fx:id="buttonSendMPE" layoutX="372.0" layoutY="521.0" mnemonicParsing="false" onAction="#onButtonSendMPEAction" text="Send MPE">
+                        <Button fx:id="buttonSendMPE" layoutX="604.0" layoutY="540.0" mnemonicParsing="false" onAction="#onButtonSendMPEAction" text="Send MPE">
                            <font>
                               <Font size="14.0" />
                            </font></Button>
-                        <Button fx:id="buttonSendNooTEST" layoutX="226.0" layoutY="481.0" mnemonicParsing="false" onAction="#onButtonSendNooTESTAction" text="Noo TEST">
+                        <Button fx:id="buttonSendNooTEST" layoutX="97.0" layoutY="419.0" mnemonicParsing="false" onAction="#onButtonSendNooTESTAction" text="Noo TEST">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
+                        <TextField fx:id="PAPICoinage" alignment="CENTER" layoutX="231.0" layoutY="480.0" prefHeight="26.0" prefWidth="149.0" promptText="Amount Coinage" text="10.01">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="PAPITick" alignment="CENTER" layoutX="407.0" layoutY="480.0" prefHeight="26.0" prefWidth="149.0" promptText="Future Tick Index" text="1">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
 </children></AnchorPane>
 </content>
 </Tab>
@@ -155,7 +156,7 @@
 <font>
 <Font size="14.0" />
 </font></TextField>
-<ImageView fitHeight="117.0" fitWidth="116.0" layoutX="486.0" layoutY="130.0">
+<ImageView fitHeight="92.0" fitWidth="91.0" layoutX="499.0" layoutY="160.0">
 <image>
 <Image url="@qrcode-placeholder.png" />
 </image>
@@ -167,7 +168,7 @@
 <font>
 <Font size="14.0" />
 </font>
-</TextField><TextField fx:id="walletSendAmount" alignment="CENTER" layoutX="68.0" layoutY="230.0" prefHeight="24.0" prefWidth="183.0" promptText="999999999.999999999">
+</TextField><TextField fx:id="walletSendAmount" alignment="CENTER" layoutX="68.0" layoutY="228.0" prefHeight="24.0" prefWidth="183.0" promptText="999999999.999999999">
 <font>
 <Font size="14.0" />
 </font>
@@ -175,7 +176,7 @@
 <font>
 <Font name="Trebuchet MS Bold" size="24.0" />
 </font>
-</Label><Label layoutX="253.0" layoutY="232.0" text="ИOO" textAlignment="CENTER">
+</Label><Label layoutX="253.0" layoutY="230.0" text="ИOO" textAlignment="CENTER">
 <font>
 <Font name="Trebuchet MS Bold" size="18.0" />
 </font>
@@ -184,7 +185,7 @@
 <Font name="Trebuchet MS Bold" size="48.0" />
 </font>
 </Label>
-                                          <Button layoutX="653.0" layoutY="469.0" mnemonicParsing="false" onAction="#onWalletUpdate" text="Update">
+                                          <Button layoutX="653.0" layoutY="457.0" mnemonicParsing="false" onAction="#onWalletUpdate" text="Update">
                                              <font>
                                                 <Font name="Trebuchet MS Bold" size="14.0" />
                                              </font>

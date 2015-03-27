@@ -285,6 +285,9 @@ public class FXMLController implements Initializable {
 	public TextField walletSendAmount;
 	public Button walletButtonSend;
 	
+	public TextField PAPICoinage;
+	public TextField PAPITick;
+	
     @FXML
     private void onWalletButtonSend(ActionEvent event) {
 		System.out.println("onWalletButtonSend");
@@ -349,7 +352,15 @@ public class FXMLController implements Initializable {
 		try {
 			//BigInteger test = BigInteger.valueOf(4294967296L);
 			//long test2 = test.longValue();
-			testTextArea.appendText(String.format("PAPI\t\t[%s]\r\n", noocoind().submitVote("https://www.bitstamp.net/api/ticker/", BigDecimal.valueOf(10.01), BigInteger.valueOf(1L))));
+			double PAPICoinageD = 0.01;
+			long PAPITickL = 1L;
+			try {
+				PAPICoinageD = NumberFormat.getNumberInstance().parse(PAPICoinage.getText()).doubleValue();
+				PAPITickL = NumberFormat.getNumberInstance().parse(PAPITick.getText()).longValue();
+			} catch (ParseException ex) {
+				System.out.println(ex.toString());
+			}
+			testTextArea.appendText(String.format("PAPI\t\t[%s]\r\n", noocoind().submitVote("https://www.bitstamp.net/api/ticker/", BigDecimal.valueOf(PAPICoinageD), BigInteger.valueOf(PAPITickL))));
 		} catch (BtcException ex) {
 			noocoind = null;
 		}
