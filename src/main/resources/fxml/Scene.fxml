@@ -28,7 +28,7 @@
                            <font>
                               <Font size="14.0" />
                            </font></Button>
-                        <Button fx:id="buttonSendMPE" layoutX="604.0" layoutY="540.0" mnemonicParsing="false" onAction="#onButtonSendMPEAction" text="Send MPE">
+                        <Button fx:id="buttonSendMPE" layoutX="604.0" layoutY="549.0" mnemonicParsing="false" onAction="#onButtonSendMPEAction" text="Send MPE">
                            <font>
                               <Font size="14.0" />
                            </font></Button>
@@ -43,6 +43,11 @@
                            </font>
                         </TextField>
                         <TextField fx:id="PAPITick" alignment="CENTER" layoutX="407.0" layoutY="480.0" prefHeight="26.0" prefWidth="149.0" promptText="Future Tick Index" text="1">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="PAPIURL" alignment="CENTER" layoutX="231.0" layoutY="446.0" prefHeight="26.0" prefWidth="324.0" promptText="API URL" text="https://www.bitstamp.net/api/ticker/">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -270,7 +275,7 @@
             <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
               <children><VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 <children>
-                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-14.0" layoutY="-19.0" legendSide="TOP" title="Prediction | Btc-e BTC/USD" AnchorPane.bottomAnchor="218.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
+                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-14.0" layoutY="-19.0" legendSide="TOP" title="Prediction | Bitstamp BTC/USD Price" AnchorPane.bottomAnchor="218.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
                   <xAxis>
                     <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickLabelsVisible="true" tickMarkVisible="true" upperBound="12.0" />
                   </xAxis>
