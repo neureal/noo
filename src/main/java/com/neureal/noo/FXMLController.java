@@ -135,6 +135,18 @@ public class FXMLController implements Initializable {
 						double[] predictions = predictor.predict(inputP);
 						for (int i=0; i < predictions.length; i++) point.setData(descPredStart+i, predictions[i]); //add prediction data share output
 						//chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), predictions, 0.0d, 0.0d); //comment out when doing both prediction and trading
+						
+						for (int i=0; i < predictions.length; i++) {
+							System.out.println(predictions[i]);
+							predictions[i] = normPrice.deNormalize(predictions[i]);
+							byte[] data = (BigDecimal.valueOf(predictions[i]).toBigInteger().toByteArray());
+							ArrayUtils.reverse(data); //make little endian
+							try {
+								noocoind().submitWork(PAPIURL.getText(), BigDecimal.valueOf(1.01), BigInteger.valueOf((long)i), bytesToHex(data));
+							} catch (BtcException ex) {
+								ex.printStackTrace();
+							}
+						}
 
 						//****action training
 						actor.train();
@@ -287,6 +299,8 @@ public class FXMLController implements Initializable {
 	
 	public TextField PAPICoinage;
 	public TextField PAPITick;
+	public TextField PAPIURL;
+	
 	
     @FXML
     private void onWalletButtonSend(ActionEvent event) {
@@ -360,7 +374,7 @@ public class FXMLController implements Initializable {
 			} catch (ParseException ex) {
 				System.out.println(ex.toString());
 			}
-			testTextArea.appendText(String.format("PAPI\t\t[%s]\r\n", noocoind().submitVote("https://www.bitstamp.net/api/ticker/", BigDecimal.valueOf(PAPICoinageD), BigInteger.valueOf(PAPITickL))));
+			testTextArea.appendText(String.format("PAPI\t\t[%s]\r\n", noocoind().submitVote(PAPIURL.getText(), BigDecimal.valueOf(PAPICoinageD), BigInteger.valueOf(PAPITickL))));
 		} catch (BtcException ex) {
 			noocoind = null;
 		}
@@ -368,12 +382,24 @@ public class FXMLController implements Initializable {
 	}
     @FXML
     private void onButtonSendMPEAction(ActionEvent event) {
+//		int i = 2;
+//		double pred = 0.2234;
+//		pred = normPrice.deNormalize(pred);
+//		System.out.println(pred);
+//		byte[] data = (BigDecimal.valueOf(pred).toBigInteger().toByteArray());
+//		ArrayUtils.reverse(data); //make little endian
+//		try {
+//			noocoind().submitWork(PAPIURL.getText(), BigDecimal.valueOf(1.01), BigInteger.valueOf((long)i), bytesToHex(data));
+//		} catch (BtcException ex) {
+//			ex.printStackTrace();
+//		}
+		
 		try {
 			long epoctime = (new Date()).getTime()/1000L; //get seconds
 			epoctime = Math.floorDiv(epoctime, 30L); //predict that the next tick (change in data) will be this data (each tick happens every 30 seconds)
 			byte[] data = (BigInteger.valueOf(epoctime).toByteArray());
 			ArrayUtils.reverse(data); //make little endian
-			testTextArea.appendText(String.format("MPE\t\t[%s]\r\n", noocoind().submitWork("https://www.bitstamp.net/api/ticker/", BigDecimal.valueOf(1.01), BigInteger.valueOf(1L), bytesToHex(data))));
+			testTextArea.appendText(String.format("MPE\t\t[%s]\r\n", noocoind().submitWork(PAPIURL.getText(), BigDecimal.valueOf(1.01), BigInteger.valueOf(1L), bytesToHex(data))));
 		} catch (BtcException ex) {
 			noocoind = null;
 		}
