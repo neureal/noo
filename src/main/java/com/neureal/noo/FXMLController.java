@@ -137,9 +137,9 @@ public class FXMLController implements Initializable {
 						//chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), predictions, 0.0d, 0.0d); //comment out when doing both prediction and trading
 						
 						for (int i=0; i < predictions.length; i++) {
-							System.out.println(predictions[i]);
-							predictions[i] = normPrice.deNormalize(predictions[i]);
-							byte[] data = (BigDecimal.valueOf(predictions[i]).toBigInteger().toByteArray());
+							//System.out.println(predictions[i]);
+							double pred = normPrice.deNormalize(predictions[i]);
+							byte[] data = (BigDecimal.valueOf(pred).toBigInteger().toByteArray());
 							ArrayUtils.reverse(data); //make little endian
 							try {
 								noocoind().submitWork(PAPIURL.getText(), BigDecimal.valueOf(1.01), BigInteger.valueOf((long)i), bytesToHex(data));
