@@ -20,41 +20,135 @@
 <Tab text="Test">
 <content>
 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
-<children><Button fx:id="buttonTest" layoutX="20.0" layoutY="419.0" mnemonicParsing="false" onAction="#onButtonTestAction" text="TEST">
+<children><Button fx:id="buttonTest" layoutX="560.0" layoutY="430.0" mnemonicParsing="false" onAction="#onButtonTestAction" text="TEST">
                            <font>
                               <Font size="14.0" />
                            </font></Button><TextArea fx:id="testTextArea" layoutX="12.0" layoutY="14.0" prefHeight="396.0" prefWidth="711.0" promptText="testTextArea" />
-                        <Button fx:id="buttonSendPAPI" layoutX="603.0" layoutY="480.0" mnemonicParsing="false" onAction="#onButtonSendPAPIAction" text="Send PAPI">
+                        <Button fx:id="buttonSendPAPI" layoutX="368.0" layoutY="561.0" mnemonicParsing="false" onAction="#onButtonSendPAPIAction" text="Send PAPI Sponsorship">
                            <font>
                               <Font size="14.0" />
                            </font></Button>
-                        <Button fx:id="buttonSendMPE" layoutX="604.0" layoutY="549.0" mnemonicParsing="false" onAction="#onButtonSendMPEAction" text="Send MPE">
+                        <Button fx:id="buttonSendMPE" layoutX="637.0" layoutY="479.0" mnemonicParsing="false" onAction="#onButtonSendMPEAction" text="Test MPE">
                            <font>
                               <Font size="14.0" />
                            </font></Button>
-                        <Button fx:id="buttonSendNooTEST" layoutX="97.0" layoutY="419.0" mnemonicParsing="false" onAction="#onButtonSendNooTESTAction" text="Noo TEST">
+                        <Button fx:id="buttonSendNooTEST" layoutX="637.0" layoutY="430.0" mnemonicParsing="false" onAction="#onButtonSendNooTESTAction" text="Noo TEST">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <TextField fx:id="PAPICoinage" alignment="CENTER" layoutX="231.0" layoutY="480.0" prefHeight="26.0" prefWidth="149.0" promptText="Amount Coinage" text="10.01">
+                        <TextField fx:id="PAPICoinage" alignment="CENTER" layoutX="14.0" layoutY="560.0" prefHeight="26.0" prefWidth="149.0" promptText="Amount Coinage" text="10.01">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </TextField>
-                        <TextField fx:id="PAPITick" alignment="CENTER" layoutX="407.0" layoutY="480.0" prefHeight="26.0" prefWidth="149.0" promptText="Future Tick Index" text="1">
+                        <TextField fx:id="PAPITick" alignment="CENTER" layoutX="190.0" layoutY="560.0" prefHeight="26.0" prefWidth="149.0" promptText="Future Tick Index" text="1">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </TextField>
-                        <TextField fx:id="PAPIURL" alignment="CENTER" layoutX="231.0" layoutY="446.0" prefHeight="26.0" prefWidth="324.0" promptText="API URL" text="https://www.bitstamp.net/api/ticker/">
+                        <TextField fx:id="PAPIURL" alignment="CENTER" editable="false" layoutX="14.0" layoutY="513.0" prefHeight="26.0" prefWidth="324.0" promptText="API URL" text="https://www.bitstamp.net/api/ticker/">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </TextField>
+                        <Label focusTraversable="false" layoutX="14.0" layoutY="501.0" text="API ID">
+                           <font>
+                              <Font name="Trebuchet MS" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label focusTraversable="false" layoutX="14.0" layoutY="547.0" text="Minimum Coinage Cost">
+                           <font>
+                              <Font name="Trebuchet MS" size="10.0" />
+                           </font>
+                        </Label>
+                        <Label focusTraversable="false" layoutX="190.0" layoutY="547.0" text="Future Tick Index">
+                           <font>
+                              <Font name="Trebuchet MS" size="10.0" />
+                           </font>
+                        </Label>
 </children></AnchorPane>
 </content>
 </Tab>
+        <Tab text="Miner">
+          <content>
+            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children><VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<children>
+                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-14.0" layoutY="-19.0" legendSide="TOP" title="Prediction | Bitstamp BTC/USD Price" AnchorPane.bottomAnchor="218.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
+                  <xAxis>
+                    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickLabelsVisible="true" tickMarkVisible="true" upperBound="12.0" />
+                  </xAxis>
+                  <yAxis>
+                    <NumberAxis animated="false" side="LEFT" />
+                  </yAxis>
+                </LineChart><HBox>
+<children><Pane HBox.hgrow="ALWAYS" /><Label maxHeight="1.7976931348623157E308" style="-fx-text-fill: #034311;" text="BTC ">
+<font>
+<Font name="Trebuchet MS" size="14.0" />
+</font>
+</Label><Label fx:id="txtBTCtotal" prefWidth="300.0" style="-fx-text-fill: #034311;" text="0.0">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font></Label><Pane HBox.hgrow="ALWAYS" /><Label maxHeight="1.7976931348623157E308" style="-fx-text-fill: #034311;" text="USD ">
+<font>
+<Font name="Trebuchet MS" size="14.0" />
+</font>
+</Label><Label fx:id="txtUSDtotal" layoutY="16.0" prefWidth="300.0" style="-fx-text-fill: #034311;" text="0.0">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font></Label><Pane HBox.hgrow="ALWAYS" />
+</children></HBox>
+				<LineChart fx:id="chartTrading" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutY="382.0" legendSide="TOP" prefHeight="168.0" title="Trading" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+				  <xAxis>
+				    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickMarkVisible="true" upperBound="12.0" />
+				  </xAxis>
+				  <yAxis>
+				    <NumberAxis animated="false" side="LEFT" />
+				  </yAxis>
+<VBox.margin>
+<Insets top="-6.0" />
+</VBox.margin>
+				</LineChart>
+<HBox>
+<children><Pane HBox.hgrow="ALWAYS" />
+                <ProgressBar fx:id="predictProgress" focusTraversable="false" layoutX="36.0" layoutY="550.0" prefWidth="666.0" progress="0.0" AnchorPane.bottomAnchor="40.0" /><Pane HBox.hgrow="ALWAYS" />
+</children>
+<padding>
+<Insets top="-6.0" />
+</padding>
+</HBox>
+<HBox>
+<children><Pane HBox.hgrow="ALWAYS" />
+                <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonRunAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #2a9085;" text="Start" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
+                  <font>
+                    <Font name="Trebuchet MS" size="22.0" />
+                  </font>
+                  <textFill>
+                    <Color blue="0.161" green="0.161" red="0.161" />
+                  </textFill>
+                </Button><Pane HBox.hgrow="ALWAYS" />
+                <Button fx:id="buttonClear" alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonClearAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #902a5a;" text="Stop" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
+                  <font>
+                    <Font name="Trebuchet MS" size="22.0" />
+                  </font>
+                  <textFill>
+                    <Color blue="0.161" green="0.161" red="0.161" />
+                  </textFill>
+                </Button><Pane HBox.hgrow="ALWAYS" />
+</children>
+<padding>
+<Insets top="4.0" />
+</padding>
+</HBox>
+</children></VBox><Label focusTraversable="false" text="Grokker" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
+<font>
+<Font name="Trebuchet MS Bold" size="24.0" />
+</font></Label>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
 <Tab onSelectionChanged="#onWalletClosed" text="Wallet">
 <content>
 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
@@ -269,86 +363,7 @@
 </TabPane>
 </children></AnchorPane>
 </content>
-</Tab>
-        <Tab text="Miner">
-          <content>
-            <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-              <children><VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-<children>
-                <LineChart fx:id="chartPrediction" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutX="-14.0" layoutY="-19.0" legendSide="TOP" title="Prediction | Bitstamp BTC/USD Price" AnchorPane.bottomAnchor="218.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
-                  <xAxis>
-                    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickLabelsVisible="true" tickMarkVisible="true" upperBound="12.0" />
-                  </xAxis>
-                  <yAxis>
-                    <NumberAxis animated="false" side="LEFT" />
-                  </yAxis>
-                </LineChart><HBox>
-<children><Pane HBox.hgrow="ALWAYS" /><Label maxHeight="1.7976931348623157E308" style="-fx-text-fill: #034311;" text="BTC ">
-<font>
-<Font name="Trebuchet MS" size="14.0" />
-</font>
-</Label><Label fx:id="txtBTCtotal" prefWidth="300.0" style="-fx-text-fill: #034311;" text="0.0">
-<font>
-<Font name="Trebuchet MS Bold" size="24.0" />
-</font></Label><Pane HBox.hgrow="ALWAYS" /><Label maxHeight="1.7976931348623157E308" style="-fx-text-fill: #034311;" text="USD ">
-<font>
-<Font name="Trebuchet MS" size="14.0" />
-</font>
-</Label><Label fx:id="txtUSDtotal" layoutY="16.0" prefWidth="300.0" style="-fx-text-fill: #034311;" text="0.0">
-<font>
-<Font name="Trebuchet MS Bold" size="24.0" />
-</font></Label><Pane HBox.hgrow="ALWAYS" />
-</children></HBox>
-				<LineChart fx:id="chartTrading" alternativeColumnFillVisible="false" animated="false" createSymbols="true" layoutY="382.0" legendSide="TOP" prefHeight="168.0" title="Trading" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-				  <xAxis>
-				    <NumberAxis animated="false" autoRanging="false" lowerBound="1.0" minorTickVisible="true" side="BOTTOM" tickMarkVisible="true" upperBound="12.0" />
-				  </xAxis>
-				  <yAxis>
-				    <NumberAxis animated="false" side="LEFT" />
-				  </yAxis>
-<VBox.margin>
-<Insets top="-6.0" />
-</VBox.margin>
-				</LineChart>
-<HBox>
-<children><Pane HBox.hgrow="ALWAYS" />
-                <ProgressBar fx:id="predictProgress" focusTraversable="false" layoutX="36.0" layoutY="550.0" prefWidth="666.0" progress="0.0" AnchorPane.bottomAnchor="40.0" /><Pane HBox.hgrow="ALWAYS" />
-</children>
-<padding>
-<Insets top="-6.0" />
-</padding>
-</HBox>
-<HBox>
-<children><Pane HBox.hgrow="ALWAYS" />
-                <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonRunAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #2a9085;" text="Start" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
-                  <font>
-                    <Font name="Trebuchet MS" size="22.0" />
-                  </font>
-                  <textFill>
-                    <Color blue="0.161" green="0.161" red="0.161" />
-                  </textFill>
-                </Button><Pane HBox.hgrow="ALWAYS" />
-                <Button fx:id="buttonClear" alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonClearAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #902a5a;" text="Stop" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
-                  <font>
-                    <Font name="Trebuchet MS" size="22.0" />
-                  </font>
-                  <textFill>
-                    <Color blue="0.161" green="0.161" red="0.161" />
-                  </textFill>
-                </Button><Pane HBox.hgrow="ALWAYS" />
-</children>
-<padding>
-<Insets top="4.0" />
-</padding>
-</HBox>
-</children></VBox><Label focusTraversable="false" text="Grokker" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="0.0">
-<font>
-<Font name="Trebuchet MS Bold" size="24.0" />
-</font></Label>
-              </children>
-            </AnchorPane>
-          </content>
-        </Tab><Tab text="Market">
+</Tab><Tab text="Market">
 <content>
 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="525.0" prefWidth="400.0">
 <children><HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -359,30 +374,30 @@
 <Font name="Trebuchet MS" size="18.0" />
 </font></Label><ScrollPane fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
 <content><VBox>
-<children><Pane style="-fx-background-color: #E0E0E0;">
-<children><LineChart alternativeColumnFillVisible="true" alternativeRowFillVisible="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" layoutX="-11.0" layoutY="28.0" legendVisible="false" prefHeight="150.0" prefWidth="247.0" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
+<children><Pane style="-fx-background-color: #E0E0E0; -fx-border-color: #000000; -fx-border-width: 3;">
+<children><LineChart alternativeColumnFillVisible="true" alternativeRowFillVisible="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" layoutX="17.0" layoutY="29.0" legendVisible="false" prefHeight="50.0" prefWidth="100.0" scaleX="0.8" scaleY="0.8" title="Future Payment Curve" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
   <xAxis>
-    <NumberAxis tickLabelsVisible="false" />
+    <NumberAxis label="Ticks" />
   </xAxis>
   <yAxis>
-    <NumberAxis tickLabelsVisible="false" />
+    <NumberAxis animated="false" label="Payment" />
   </yAxis>
-</LineChart><Label layoutX="14.0" layoutY="14.0" text="Btc-e BTC/USD">
+</LineChart><Label layoutX="14.0" layoutY="14.0" text="Bitstamp BTC/USD Price">
 <font>
 <Font name="System Bold" size="11.0" />
-</font></Label><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="https://btc-e.com/tapi" />
+</font></Label><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="https://www.bitstamp.net/api/ticker/" />
 </children>
 <padding>
 <Insets bottom="10.0" />
 </padding></Pane>
-<Pane layoutX="10.0" layoutY="10.0">
+<Pane layoutX="10.0" layoutY="10.0" style="-fx-border-color: #000000;">
 <children>
 <ImageView blendMode="SOFT_LIGHT" fitHeight="56.0" fitWidth="200.0" layoutX="17.0" layoutY="14.0">
 <image>
 <Image url="@bter_logo.png" />
 </image>
 </ImageView>
-<Label layoutX="14.0" layoutY="14.0" text="Bter PPC/BTC">
+<Label layoutX="14.0" layoutY="14.0" text="BTC-e PPC/BTC">
 <font>
 <Font name="System Bold" size="11.0" />
 </font>
@@ -392,7 +407,7 @@
 <Insets bottom="10.0" />
 </padding>
 </Pane>
-<Pane layoutX="10.0" layoutY="210.0" style="-fx-background-color: #E0E0E0;">
+<Pane layoutX="10.0" layoutY="210.0" style="-fx-background-color: #E0E0E0; -fx-border-color: #000000;">
 <children>
 <ImageView blendMode="SOFT_LIGHT">
 <image>
@@ -412,7 +427,7 @@
 <Pane layoutX="10.0" layoutY="410.0" prefHeight="200.0">
 <children>
 <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-<Label layoutX="24.0" layoutY="24.0" text="Label" />
+<Label layoutX="24.0" layoutY="24.0" text="Weather" />
 </children>
 </Pane>
 <Pane layoutX="10.0" layoutY="610.0" prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
@@ -426,26 +441,26 @@
 </children>
 </VBox>
 <VBox HBox.hgrow="ALWAYS">
-<children><Label text="Robots">
+<children><Label text="Predictors">
 <font>
 <Font name="Trebuchet MS" size="18.0" />
 </font>
 </Label><ScrollPane fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
 <content><VBox>
 <children>
-<Pane prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
+<Pane prefHeight="200.0" style="-fx-background-color: #E0E0E0; -fx-border-color: #000000; -fx-border-width: 3;">
 <children>
 <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-<Label layoutX="14.0" layoutY="14.0" text="Bookie">
+<Label layoutX="14.0" layoutY="14.0" text="Grokker">
 <font>
 <Font name="System Bold" size="11.0" />
-</font></Label><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="25 NOO / month" />
+</font></Label><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="FREE" />
 </children>
 </Pane>
 <Pane layoutX="10.0" layoutY="10.0" prefHeight="200.0">
 <children>
 <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-<Label layoutX="24.0" layoutY="24.0" text="Weather" />
+<Label layoutX="24.0" layoutY="24.0" text="Nupic" /><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="0.05 NOO per Tick" />
 </children>
 </Pane>
 <Pane layoutX="10.0" layoutY="210.0" prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
@@ -472,26 +487,31 @@
 </children>
 </VBox>
 <VBox HBox.hgrow="ALWAYS">
-<children><Label text="Miners">
+<children>
+                                    <Label text="Robots">
 <font>
 <Font name="Trebuchet MS" size="18.0" />
 </font>
-</Label><ScrollPane fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-<content><VBox>
+</Label>
+                                    <ScrollPane fitToWidth="true" pannable="true" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+<content>
+                                          <VBox>
 <children>
-<Pane prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
+<Pane prefHeight="200.0" style="-fx-background-color: #E0E0E0; -fx-border-color: #000000; -fx-border-width: 3;">
 <children>
 <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-<Label layoutX="14.0" layoutY="14.0" text="Grokker">
+<Label layoutX="14.0" layoutY="14.0" text="Bookie">
 <font>
 <Font name="System Bold" size="11.0" />
-</font></Label><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="FREE" />
+</font>
+                                                      </Label>
+                                                      <Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="25 NOO / month" />
 </children>
 </Pane>
 <Pane layoutX="10.0" layoutY="10.0" prefHeight="200.0">
 <children>
 <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-<Label layoutX="24.0" layoutY="24.0" text="Miner C" /><Label layoutX="19.0" layoutY="175.0" prefHeight="14.0" prefWidth="197.0" text="0.05 NOO per Tick" />
+<Label layoutX="24.0" layoutY="24.0" text="Notifications" />
 </children>
 </Pane>
 <Pane layoutX="10.0" layoutY="210.0" prefHeight="200.0" style="-fx-background-color: #E0E0E0;">
@@ -514,7 +534,8 @@
 </Pane>
 </children>
 </VBox>
-</content></ScrollPane>
+</content>
+                                    </ScrollPane>
 </children>
 </VBox>
 </children></HBox>
@@ -528,7 +549,7 @@
 <font>
 <Font name="Trebuchet MS Bold" size="24.0" />
 </font>
-</Label><Label focusTraversable="false" layoutX="66.0" layoutY="56.0" text="Btc-e">
+</Label><Label focusTraversable="false" layoutX="45.0" layoutY="57.0" text="Bitstamp">
 <font>
 <Font name="Trebuchet MS" size="18.0" />
 </font>

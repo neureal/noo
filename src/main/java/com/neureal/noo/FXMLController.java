@@ -136,17 +136,18 @@ public class FXMLController implements Initializable {
 						for (int i=0; i < predictions.length; i++) point.setData(descPredStart+i, predictions[i]); //add prediction data share output
 						//chartAdd(chartPrediction, chartTrading, normPrice.deNormalize(point.getData(0)), predictions, 0.0d, 0.0d); //comment out when doing both prediction and trading
 						
-						for (int i=0; i < predictions.length; i++) {
-							//System.out.println(predictions[i]);
-							double pred = normPrice.deNormalize(predictions[i]);
-							byte[] data = (BigDecimal.valueOf(pred).toBigInteger().toByteArray());
-							ArrayUtils.reverse(data); //make little endian
-							try {
-								noocoind().submitWork(PAPIURL.getText(), BigDecimal.valueOf(1.01), BigInteger.valueOf((long)i), bytesToHex(data));
-							} catch (BtcException ex) {
-								ex.printStackTrace();
-							}
+						//for (int i=0; i < predictions.length; i++) {
+						//System.out.println(predictions[i]);
+						int i = predictions.length-1;
+						double pred = normPrice.deNormalize(predictions[i])*100; //*100 to get cents, only send farthest prediction so we dont double them up
+						byte[] data = (BigDecimal.valueOf(pred).toBigInteger().toByteArray());
+						ArrayUtils.reverse(data); //make little endian
+						try {
+							noocoind().submitWork(PAPIURL.getText(), BigDecimal.valueOf(1.01), BigInteger.valueOf((long)(i+1)), bytesToHex(data));
+						} catch (BtcException ex) {
+							ex.printStackTrace();
 						}
+						//}
 
 						//****action training
 						actor.train();
