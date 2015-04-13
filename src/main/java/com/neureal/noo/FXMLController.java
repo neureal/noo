@@ -383,27 +383,30 @@ public class FXMLController implements Initializable {
 	}
     @FXML
     private void onButtonSendMPEAction(ActionEvent event) {
-//		int i = 2;
-//		double pred = 0.2234;
-//		pred = normPrice.deNormalize(pred);
-//		System.out.println(pred);
-//		byte[] data = (BigDecimal.valueOf(pred).toBigInteger().toByteArray());
-//		ArrayUtils.reverse(data); //make little endian
+		int i = 3;
+		double pred = 0.2234;
+		pred = normPrice.deNormalize(pred)*100;
+		System.out.println(pred);
+		byte[] data = (BigDecimal.valueOf(pred).toBigInteger().toByteArray());
+		ArrayUtils.reverse(data); //make little endian
+		try {
+			testTextArea.appendText(String.format("MPE\t\t[%s]\r\n", noocoind().submitWork(PAPIURL.getText(), BigDecimal.valueOf(1.01), BigInteger.valueOf((long)i), bytesToHex(data))));
+		} catch (BtcException ex) {
+			noocoind = null;
+			ex.printStackTrace();
+		}
+		
 //		try {
-//			noocoind().submitWork(PAPIURL.getText(), BigDecimal.valueOf(1.01), BigInteger.valueOf((long)i), bytesToHex(data));
+//			long epoctime = (new Date()).getTime()/1000L; //get seconds
+//			epoctime = Math.floorDiv(epoctime, 30L); //predict that the next tick (change in data) will be this data (each tick happens every 30 seconds)
+//			byte[] data = (BigInteger.valueOf(epoctime).toByteArray());
+//			ArrayUtils.reverse(data); //make little endian
+//			testTextArea.appendText(String.format("MPE\t\t[%s]\r\n", noocoind().submitWork(PAPIURL.getText(), BigDecimal.valueOf(1.01), BigInteger.valueOf(1L), bytesToHex(data))));
 //		} catch (BtcException ex) {
+//			noocoind = null;
 //			ex.printStackTrace();
 //		}
 		
-		try {
-			long epoctime = (new Date()).getTime()/1000L; //get seconds
-			epoctime = Math.floorDiv(epoctime, 30L); //predict that the next tick (change in data) will be this data (each tick happens every 30 seconds)
-			byte[] data = (BigInteger.valueOf(epoctime).toByteArray());
-			ArrayUtils.reverse(data); //make little endian
-			testTextArea.appendText(String.format("MPE\t\t[%s]\r\n", noocoind().submitWork(PAPIURL.getText(), BigDecimal.valueOf(1.01), BigInteger.valueOf(1L), bytesToHex(data))));
-		} catch (BtcException ex) {
-			noocoind = null;
-		}
 		
 	}
     @FXML
