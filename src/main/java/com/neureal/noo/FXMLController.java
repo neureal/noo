@@ -103,13 +103,14 @@ public class FXMLController implements Initializable {
 		@Override
 		public void run() {
 			updateProgress(predictProgress, -1.0d);
+			lblGatheringData.setVisible(true);
 			//chartAddSingle(chartPrediction, 1, 0, 0.0d); //hack to visually show prediction at same tick as predicted
 			GetMarketFile mkt_btce = null;
 			try {
 				initDataSet();
 				Miner predictor = new Miner();
 				Robot actor = new Robot();
-				mkt_btce = new GetMarketFile();
+				//mkt_btce = new GetMarketFile();
 				
 				//while (mkt_btce.getNewPoint(dataSet)) { //emulated new data point/tick
 				while (GetTicker.getNewPoint(dataSet)) { //real new data point/tick
@@ -120,6 +121,7 @@ public class FXMLController implements Initializable {
 					if (newidx >= INPUT_WINDOW_SIZE + PREDICT_WINDOW_SIZE) { //give us at least a input + predict window of data (only at the beginning)
 						TemporalPoint point = dataSet.getPoints().get(newidx - 1);
 
+						lblGatheringData.setVisible(false);
 						//****prediction training
 						//generate and add new training pair for prediction training
 						final BasicMLData inputT = dataSet.generateInputNeuralData(newidx - (INPUT_WINDOW_SIZE + PREDICT_WINDOW_SIZE) + 1); //it subtracts 1 from index for real index
@@ -173,6 +175,7 @@ public class FXMLController implements Initializable {
 			} finally {
 				if (mkt_btce != null) mkt_btce.close();
 				updateProgress(predictProgress, 0.0d);
+				lblGatheringData.setVisible(false);
 			}
 		}
 	}
@@ -188,6 +191,7 @@ public class FXMLController implements Initializable {
 	private Button buttonRun;
 	public Label txtBTCtotal;
 	public Label txtUSDtotal;
+	public Label lblGatheringData;
 	
     @FXML
     private void onButtonRunAction(ActionEvent event) {

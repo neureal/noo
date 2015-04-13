@@ -127,7 +127,13 @@
                   <textFill>
                     <Color blue="0.161" green="0.161" red="0.161" />
                   </textFill>
-                </Button><Pane HBox.hgrow="ALWAYS" />
+                </Button>
+                                    <Pane HBox.hgrow="ALWAYS" />
+                                    <Label fx:id="lblGatheringData" contentDisplay="CENTER" focusTraversable="false" text="Gathering Data..." visible="false">
+                                       <font>
+                                          <Font name="Trebuchet MS" size="12.0" />
+                                       </font>
+                                    </Label><Pane HBox.hgrow="ALWAYS" />
                 <Button fx:id="buttonClear" alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="568.0" minHeight="32.0" minWidth="73.0" onAction="#onButtonClearAction" prefHeight="32.0" prefWidth="151.0" rotate="0.0" style="-fx-background-color: #902a5a;" text="Stop" textAlignment="CENTER" textOverrun="CLIP" underline="false" AnchorPane.bottomAnchor="0.0">
                   <font>
                     <Font name="Trebuchet MS" size="22.0" />
